@@ -1,18 +1,26 @@
 import { Link } from "react-router-dom"
 import Input from "./Input"
 import "./index.css"
-import { useContext } from "react"
 import { AuthContext } from "../Context/AuthContext"
 import { FormContext } from "../Context/FormContext"
-import { validateEmail, validatePassword } from "../validate"
+import { useContext } from "react"
+import {
+	validateEmail,
+	validatePassword,
+	validatePasswordConfirm,
+} from "../validate"
+import Notify from "../Notify/Notify"
 
-const Login = () => {
+const SignUp = () => {
 	const {
 		form,
 		handleLoginWithGoogle,
 		handleLoginWithFacebook,
-		handleLoginWithEmail,
+		handleSignupWithEmail,
+		alert,
+		handleCloseAlert,
 	} = useContext(AuthContext)
+
 	const {
 		errorMessage,
 		setErrorMessage,
@@ -26,12 +34,17 @@ const Login = () => {
 		setErrorMessage({
 			email: validateEmail(form.email),
 			password: validatePassword(form.password, 8, 16),
+			passwordConfirm: validatePasswordConfirm(
+				form.password,
+				form.passwordConfirm
+			),
 		})
-		handleLoginWithEmail()
+		handleSignupWithEmail()
 	}
 
 	return (
 		<div className="atlassian-brand">
+			<Notify alert={alert} handleCloseAlert={handleCloseAlert} />
 			<div>
 				<h1 className="title">
 					<svg
@@ -56,7 +69,7 @@ const Login = () => {
 				<section className="inner-section">
 					<div className="section-wrapper quick-switch">
 						<div className="layout-twothirds-center account-form">
-							<h1>Đăng nhập tài khoản</h1>
+							<h1>Đăng ký tài khoản</h1>
 							<div className="login-password-container">
 								<form
 									onSubmit={handleSubmit}
@@ -81,11 +94,22 @@ const Login = () => {
 										errorMessage={errorMessage.password}
 										onBlur={handleBlur}
 									/>
+									<Input
+										type="password"
+										name="passwordConfirm"
+										placeholder={"Nhập lại mật khẩu"}
+										onChange={handleChange}
+										value={form.passwordConfirm}
+										errorMessage={
+											errorMessage.passwordConfirm
+										}
+										onBlur={handleBlur}
+									/>
 									<input
 										id="login"
 										type="submit"
 										className="button account-button button-green btn btn-success"
-										value="Đăng nhập"
+										value="Đăng ký"
 									/>
 								</form>
 								<div className="login-methods hide-when-two-factor">
@@ -103,7 +127,10 @@ const Login = () => {
 												id="google-icon"
 												className="icon"
 											></span>
-											<span className="label">
+											<span
+												className="label"
+												data-analytics-button="loginWithGmailButton"
+											>
 												Tiếp tục với Google
 											</span>
 										</button>
@@ -116,7 +143,10 @@ const Login = () => {
 												id="facebook-icon"
 												className="icon"
 											></span>
-											<span className="label">
+											<span
+												className="label"
+												data-analytics-button="loginWithGmailButton"
+											>
 												Tiếp tục với Facebook
 											</span>
 										</button>
@@ -127,11 +157,11 @@ const Login = () => {
 							<ul className="bottom-form-link">
 								<li>
 									<Link
-										className="signupLink"
-										to="/signup"
+										className="loginLink"
+										to="/login"
 										onClick={handleSwitchLoginSignup}
 									>
-										Chưa có tài khoản? Đăng ký
+										Đã có tài khoản? Đăng nhập
 									</Link>
 								</li>
 							</ul>
@@ -143,4 +173,4 @@ const Login = () => {
 	)
 }
 
-export default Login
+export default SignUp
