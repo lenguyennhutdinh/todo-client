@@ -1,0 +1,8 @@
+.lists {
+	background-color: #0079bf;
+	height: calc(100vh - 57px - 44px);
+	padding: 12px;
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+}

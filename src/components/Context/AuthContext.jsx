@@ -11,6 +11,7 @@ export const AuthContext = createContext({})
 
 export const AuthProvider = ({ children }) => {
 	const [userId, setUserId] = useState(localStorage.getItem("userId"))
+	const [data, setData] = useState()
 	const [form, setForm] = useState({
 		email: "",
 		password: "",
@@ -21,6 +22,7 @@ export const AuthProvider = ({ children }) => {
 		message: "",
 		severity: "",
 	})
+
 	const handleCloseAlert = () => {
 		setAlert({ ...alert, isAlert: false })
 	}
@@ -30,7 +32,6 @@ export const AuthProvider = ({ children }) => {
 	const handleLoginWithGoogle = () => {
 		signInWithPopup(auth, providerGoogle)
 			.then((result) => {
-				console.log(result.user)
 				localStorage.setItem("userId", result.user.uid)
 				setUserId(localStorage.getItem("userId"))
 				setAlert({
@@ -47,7 +48,6 @@ export const AuthProvider = ({ children }) => {
 
 	const handleLoginWithFacebook = () => {
 		signInWithPopup(auth, providerFacebook).then((result) => {
-			console.log(result.user)
 			localStorage.setItem("userId", result.user.uid)
 			setAlert({
 				isAlert: !alert.isAlert,
@@ -85,7 +85,6 @@ export const AuthProvider = ({ children }) => {
 	const handleLoginWithEmail = () => {
 		signInWithEmailAndPassword(auth, form.email, form.password)
 			.then((result) => {
-				console.log(result.user)
 				localStorage.setItem("userId", result.user.uid)
 				setAlert({
 					isAlert: !alert.isAlert,
@@ -131,6 +130,8 @@ export const AuthProvider = ({ children }) => {
 				alert,
 				setAlert,
 				handleCloseAlert,
+				data,
+				setData,
 			}}
 		>
 			{children}

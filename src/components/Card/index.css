@@ -1,0 +1,67 @@
+.cards .card {
+	position: relative;
+}
+
+.cards .card .card-name {
+	cursor: pointer;
+	width: 100%;
+}
+
+.cards .card .card-name:hover {
+	background-color: rgba(0, 0, 0, 0.05);
+}
+
+.cards .card:hover .icons .card-name-edit {
+	display: block;
+}
+
+.cards .card .icons .card-name-edit {
+	display: none;
+	padding: 6px;
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+.cards .card .icons .card-name-edit:hover {
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+.cards .card .icons {
+	position: absolute;
+	right: 0;
+	top: 4px;
+}
+
+.cards .card .overlay {
+	background-color: rgba(0, 0, 0, 0.4);
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.cards .card .card-actions {
+	position: absolute;
+	right: -100px;
+	z-index: 2;
+}
+
+.cards .card .card-action {
+	background-color: rgba(0, 0, 0, 0.4);
+	color: #ddd;
+	padding: 8px 12px;
+	border-radius: 3px;
+	margin-bottom: 6px;
+	cursor: pointer;
+	display: flex;
+	gap: 8px;
+	transition: left 2s;
+}
+
+.cards .card .card-action:hover {
+	position: relative;
+	color: #fff;
+	left: 6px;
+}

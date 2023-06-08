@@ -1,0 +1,234 @@
+.header {
+	-webkit-text-size-adjust: 100%;
+	background-color: #0066a0;
+	color: white;
+	font-size: 1.4rem;
+	font-weight: 400;
+	line-height: 20px;
+	min-height: 44px;
+	max-height: 44px;
+	display: flex;
+	align-items: center;
+	padding: 2px 4px;
+}
+
+.header .logo {
+	font-size: 2.2rem;
+	font-weight: 700;
+	line-height: 32px;
+	padding: 0 8px;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	background: linear-gradient(45deg, #41bf02, #efeb05, #fff);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	cursor: pointer;
+}
+
+.header .logo svg {
+	font-size: 1.6rem;
+	color: #efeb05;
+}
+
+.header .logo:hover {
+	border-radius: 3px;
+	background-color: rgba(255, 255, 255, 0.3);
+	cursor: pointer;
+}
+
+.header .left {
+	display: flex;
+	align-items: center;
+}
+
+.header .list {
+	display: flex;
+}
+
+.header .list .item {
+	line-height: 32px;
+	padding: 0 12px;
+	display: flex;
+	align-items: center;
+}
+
+.header .list .item:hover {
+	background-color: rgba(255, 255, 255, 0.3);
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+.header .left {
+	margin-right: auto;
+}
+
+.header .open-new-board {
+	margin-left: 12px;
+	background-color: rgba(255, 255, 255, 0.2);
+	border: none;
+	line-height: 32px;
+	padding: 0 12px;
+	border-radius: 3px;
+}
+
+.header .open-new-board:hover {
+	background-color: rgba(255, 255, 255, 0.3);
+}
+
+.header .boards {
+	background-color: #0066a0;
+	position: absolute;
+	z-index: 5;
+	top: 44px;
+	bottom: 0;
+	left: 0;
+	width: 240px;
+	box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
+	transition: all 0.25s;
+	-webkit-transition: all 0.25s;
+}
+
+.header .your-boards {
+	font-size: 2rem;
+	font-weight: 700;
+	padding-bottom: 10px;
+	border-bottom: 2px solid #eee;
+	padding: 20px;
+}
+
+.header .boards .fa-xmark {
+	position: absolute;
+	right: 10px;
+	top: 12px;
+	padding: 8px 12px;
+	border-radius: 3px;
+	cursor: pointer;
+	color: #fff;
+}
+
+.header .boards .fa-xmark:hover {
+	background-color: rgba(0, 0, 0, 0.1);
+	color: red;
+}
+
+.header .list-boards {
+	display: flex;
+	flex-direction: column;
+}
+
+.header .list-boards li {
+	display: flex;
+	align-items: center;
+}
+
+.header .list-boards li a {
+	display: inline-block;
+	padding: 8px 20px;
+	text-decoration: none;
+	flex: 1;
+	color: #fff;
+}
+
+.header .list-boards li .fa-trash {
+	margin-right: 14px;
+	padding: 10px;
+	cursor: pointer;
+}
+
+.header .list-boards li .fa-trash:hover {
+	color: red;
+}
+
+.header .list-boards a:hover {
+	padding-left: 25px;
+}
+
+.header .new-board {
+	background-color: #fff;
+	color: black;
+	position: relative;
+	z-index: 2;
+	top: 94px;
+	right: 64px;
+	border-radius: 3px;
+	min-width: 240px;
+	padding: 8px 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+		rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+		rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.header .new-board .fa-xmark {
+	position: absolute;
+	right: 6px;
+	top: 6px;
+}
+
+.header .new-board .title-new-board {
+	display: flex;
+	font-size: 1.8rem;
+}
+
+.header .new-board .add-new-board {
+	border: none;
+	border-radius: 3px;
+	padding: 8px 0;
+	background-color: #0079bf;
+	color: #fff;
+	margin-bottom: 4px;
+}
+
+.header .new-board .add-new-board:hover {
+	background-color: #007aaae0;
+}
+
+.header .right {
+	display: flex;
+	align-items: center;
+}
+
+.header .right .search-box {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	width: 200px;
+	line-height: 32px;
+	background-color: rgba(255, 255, 255, 0.2);
+	padding: 0 6px;
+	border: 1px solid #14618e;
+	border-radius: 5px;
+	margin: 0 2px;
+}
+
+.header .left ul svg {
+	padding-left: 6px;
+}
+
+.header .right .search-box svg {
+	padding: 6px;
+}
+
+.header > * > svg {
+	padding: 8px;
+	font-size: 1.6rem;
+}
+
+.header > * > svg:hover {
+	border-radius: 50%;
+	background-color: rgba(255, 255, 255, 0.3);
+	cursor: pointer;
+}
+
+.header > .left span svg {
+	padding: 10px;
+	cursor: pointer;
+}
+
+.header > .left span svg:hover {
+	border-radius: 3px;
+	background-color: rgba(255, 255, 255, 0.3);
+}

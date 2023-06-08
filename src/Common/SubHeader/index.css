@@ -1,0 +1,106 @@
+.sub-header {
+	background: linear-gradient(180deg, #0066a0, #005d93);
+	border-top: 1px solid hsla(0, 0%, 100%, 0.16);
+	display: flex;
+	color: white;
+	align-items: center;
+	padding: 12px 16px;
+	font-size: 1.4rem;
+}
+
+.sub-header .left > *:hover,
+.sub-header .right > *:hover {
+	background-color: rgba(255, 255, 255, 0.4);
+	border-radius: 3px;
+}
+
+.sub-header svg {
+	padding-right: 6px;
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+.sub-header > * > svg {
+	padding: 9px;
+	background-color: rgba(255, 255, 255, 0.2);
+}
+
+.sub-header .left {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	margin-right: auto;
+}
+
+.sub-header .left * {
+	line-height: 32px;
+}
+
+.sub-header .item {
+	display: flex;
+	align-items: center;
+	padding: 0 12px;
+	background-color: rgba(255, 255, 255, 0.3);
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+.sub-header .icon {
+	background-color: rgba(255, 255, 255, 0.3);
+	border-radius: 3px;
+	padding: 0 2px;
+}
+
+.sub-header .item.board,
+.sub-header .item.share {
+	background-color: #dfe1e6;
+	color: #172b4d;
+}
+
+.sub-header .item.board:hover,
+.sub-header .item.share:hover {
+	background-color: white;
+}
+
+.sub-header .left .title {
+	font-size: 1.8rem;
+	font-weight: 700;
+	padding: 0 10px;
+}
+
+.sub-header .left .rename-board {
+	color: black;
+	width: fit-content;
+	padding: 0 12px;
+	outline: 2px solid blue;
+	border: none;
+	border-radius: 3px;
+}
+
+.sub-header .horizontal {
+	border-left: 1px solid hsla(0, 0%, 100%, 0.16);
+	height: 16px;
+	margin: 8px 4px 8px 4px;
+	display: inherit;
+}
+
+.sub-header .right {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.sub-header .right * {
+	line-height: 32px;
+}
+
+.sub-header .btn-logout {
+	border: none;
+	background-color: #f20020;
+	padding: 0 12px;
+	border-radius: 3px;
+}
+
+.sub-header .btn-logout:hover {
+	background-color: #f20020f6;
+}

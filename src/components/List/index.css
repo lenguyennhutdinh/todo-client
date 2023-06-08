@@ -1,0 +1,145 @@
+.lists .list {
+	padding: 8px;
+	background-color: #ebecf0;
+	width: 272px;
+	border-radius: 3px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	position: relative;
+}
+
+.lists .list .list-title {
+	font-weight: 600;
+	padding: 8px;
+}
+
+.lists .list .cards {
+	display: flex;
+	position: relative;
+	flex-direction: column;
+	gap: 8px;
+	color: #002970;
+}
+
+.lists .list .card {
+	background-color: white;
+	border-radius: 3px;
+	display: flex;
+	box-shadow: 0 8px 8px -4px rgb(188, 193, 194);
+}
+.lists .list .card p {
+	padding: 10px 0 10px 8px;
+}
+
+.lists .list .card .icons {
+	margin-right: 6px;
+	display: flex;
+	align-items: center;
+}
+
+.lists .list .open-add-card {
+	padding: 8px;
+	display: flex;
+	gap: 8px;
+	color: #5e6c84;
+	border: none;
+	width: 100%;
+}
+
+.lists .list .open-add-card:hover {
+	background-color: rgba(0, 0, 0, 0.1);
+	border-radius: 3px;
+	cursor: text;
+}
+
+.lists .list textarea {
+	background-color: white;
+}
+
+.lists .list .btn-add-card {
+	background-color: #0079bf;
+	color: #fff;
+	border: none;
+	border-radius: 3px;
+	padding: 8px 12px;
+}
+
+.lists .list .row {
+	margin-top: 8px;
+}
+
+.fa-xmark {
+	color: #6b778c;
+	font-size: 2.2rem;
+	margin-left: 8px;
+}
+
+.fa-xmark:hover {
+	color: rgba(0, 0, 0, 0.6);
+	cursor: pointer;
+}
+
+.lists .list .fa-ellipsis {
+	position: absolute;
+	right: 6px;
+	top: 6px;
+	color: gray;
+	padding: 10px;
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+.lists .list .fa-ellipsis:hover {
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+.lists .list .open-list-actions {
+	margin-top: -8px;
+}
+
+.lists .list .list-actions {
+	position: absolute;
+	z-index: 5;
+	background-color: #fff;
+	right: -200px;
+	top: 46px;
+	min-width: 240px;
+	font-size: 1.5rem;
+	padding: 12px 0;
+	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+	border-radius: 3px;
+}
+
+.lists .list .list-actions-title {
+	text-align: center;
+	padding: 6px;
+}
+
+.lists .list .list-actions-detail {
+	display: flex;
+	flex-direction: column;
+	color: gray;
+}
+
+.lists .list .vertical {
+	border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+	margin: 6px 12px;
+}
+
+.lists .list .list-actions-detail span {
+	padding: 8px 12px;
+	cursor: pointer;
+}
+
+.lists .list .list-actions-detail span:hover {
+	background-color: rgba(0, 0, 0, 0.1);
+	color: black;
+}
+
+.lists .list .fa-xmark {
+	position: absolute;
+	right: 12px;
+	font-size: 1.4rem;
+	padding: 4px;
+}

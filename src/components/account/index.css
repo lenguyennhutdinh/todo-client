@@ -210,7 +210,7 @@ th {
 	padding: 6px;
 	-webkit-transform: translateY(-50%) rotate(90deg);
 	transform: translateY(-50%) rotate(90deg);
-} /*! HTML5 Boilerplate v4.3.0 | MIT License | http://h5bp.com/ */
+}
 html {
 	font-family: "jaf-facitweb", "Helvetica Neue", Arial, sans-serif;
 	color: #4d4d4d;
@@ -651,21 +651,6 @@ footer li a:visited {
 footer p {
 	margin: 0.5em 0;
 }
-.atlassian-logo-small {
-	width: 150px;
-	display: inline-block;
-	vertical-align: top;
-	margin-top: 1px;
-}
-.atlassian-logo-small.white {
-	display: none;
-}
-.atlassian-white-logo .atlassian-logo-small.white {
-	display: inline-block;
-}
-.atlassian-white-logo .atlassian-logo-small.gray {
-	display: none;
-}
 .inline-image {
 	display: inline-block;
 	height: 24px;
@@ -877,20 +862,16 @@ footer p {
 	display: -ms-flexbox;
 	display: flex;
 	-webkit-box-orient: vertical;
+	justify-content: center;
 	-webkit-box-direction: normal;
 	-webkit-flex-direction: column;
 	-ms-flex-direction: column;
 	flex-direction: column;
 	min-height: 100vh;
 	-webkit-box-pack: justify;
-	-webkit-justify-content: space-between;
 	-ms-flex-pack: justify;
-	justify-content: space-between;
 	font-size: 14px;
 	text-align: center;
-}
-.atlassian-brand .trello-main-logo {
-	height: 32px;
 }
 .atlassian-brand .inner-section {
 	width: 100%;
@@ -1167,9 +1148,6 @@ footer p {
 	max-width: 400px;
 	margin: 25px auto;
 }
-.atlassian-brand .global-footer .atlassian-logo-small {
-	margin-bottom: 20px;
-}
 .atlassian-brand .global-footer .global-footer-list {
 	max-width: 45%;
 	margin-left: auto;
@@ -1181,9 +1159,6 @@ footer p {
 	}
 	.atlassian-brand .background {
 		display: none;
-	}
-	.atlassian-brand .trello-main-logo {
-		margin: 10px auto;
 	}
 	.atlassian-brand .inner-section .account-form {
 		border-color: transparent;
@@ -1200,7 +1175,7 @@ label {
 }
 .error-message {
 	border-radius: 4px;
-	margin: -4px 0 4px;
+	margin: 4px 0 0;
 	font-size: 12px;
 }
 .username-readonly {
@@ -1222,17 +1197,21 @@ label {
 	right: 0;
 	top: 0;
 }
+
 h1.title {
 	display: flex;
-	align-items: center;
 	justify-content: center;
-	margin: 40px;
+	align-items: center;
 	gap: 10px;
-	color: #0079bf;
+	margin-bottom: 30px;
 }
+
 h1.title span {
-	font-size: 32px;
+	font-size: 4rem;
+	font-weight: 700;
+	color: #0777e8;
 }
-svg {
-	height: 32px;
+
+h1.title svg {
+	font-size: 3rem;
 }
