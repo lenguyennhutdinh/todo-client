@@ -1,3 +1,4 @@
+import AddList from "../List/AddList"
 import List from "../List/List"
 import "./index.css"
 
@@ -10,11 +11,11 @@ const Lists = ({ lists }) => {
 						<List
 							key={list.listId}
 							listId={list.listId}
-							listName={list.listName}
-							cards={list.cards}
+							list={list}
 						/>
 					)
 			)}
+			<AddList />
 		</div>
 	)
 }

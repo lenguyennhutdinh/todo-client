@@ -243,7 +243,7 @@ body.bidi-highlight span[data-bidi-char]::before {
 	text-shadow: none;
 }
 ::selection {
-	background: hsl(202, 92%, 85%);
+	background: hsl(202, 95%, 62%);
 	text-shadow: none;
 }
 hr {

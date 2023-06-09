@@ -1,27 +1,87 @@
-import { faBoxArchive, faPen, faTrash } from "@fortawesome/free-solid-svg-icons"
+import {
+	faBoxArchive,
+	faCopy,
+	faPen,
+	faRightLong,
+	faTrash,
+} from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 import "./index.css"
-import { useContext, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { AuthContext } from "../Context/AuthContext"
 
 const Card = ({ card }) => {
 	const { setData } = useContext(AuthContext)
+	const renameCardRef = useRef(null)
+	const [isOpenCardOption, setIsOpenCardOption] = useState(false)
+	const [newNameCard, setNewNameCard] = useState(card.cardName)
+	useEffect(() => {
+		if (isOpenCardOption) renameCardRef.current.select()
+	}, [isOpenCardOption])
 
-	const [isOpenCardActions, setIsOpenCardAction] = useState(false)
-
-	const handleOpenCardActions = () => {
-		setIsOpenCardAction(!isOpenCardActions)
+	const handleOpenCardOption = () => {
+		setIsOpenCardOption(!isOpenCardOption)
 	}
 
-	const handleArchivedCard = (id) => {
+	const handleChangeRenameCard = (e) => {
+		const { value } = e.target
+		setNewNameCard(value)
+	}
+
+	const handleSaveRenameCard = () => {
+		const { cardId } = card
+		setData((prevBoards) =>
+			prevBoards.map((board) => {
+				if (board.boardId === prevBoards[0].boardId) {
+					const updatedLists = board.lists.map((list) => {
+						const updatedCards = list.cards.map((card) => {
+							if (card.cardId === cardId) {
+								return {
+									...card,
+									cardName: newNameCard,
+								}
+							}
+							return card
+						})
+						return {
+							...list,
+							cards: updatedCards,
+						}
+					})
+					return {
+						...board,
+						lists: updatedLists,
+					}
+				}
+				return board
+			})
+		)
+		setIsOpenCardOption(!isOpenCardOption)
+	}
+
+	const handleDeleteCard = (cardId) => {
+		setData((prevBoards) =>
+			prevBoards.map((board) => ({
+				...board,
+				lists: board.lists.map((list) => ({
+					...list,
+					cards: list.cards.filter((card) => {
+						return card.cardId !== cardId
+					}),
+				})),
+			}))
+		)
+	}
+
+	const handleArchivedCard = (cardId) => {
 		setData((prevBoards) =>
 			prevBoards.map((board) => ({
 				...board,
 				lists: board.lists.map((list) => ({
 					...list,
 					cards: list.cards.map((card) => {
-						if (card.cardId === id) {
+						if (card.cardId === cardId) {
 							return {
 								...card,
 								isArchived: true,
@@ -38,10 +98,7 @@ const Card = ({ card }) => {
 		<div className="card">
 			<p className="card-name">{card.cardName}</p>
 			<div className="icons">
-				<span
-					className="card-name-edit"
-					onClick={handleOpenCardActions}
-				>
+				<span className="card-name-edit" onClick={handleOpenCardOption}>
 					<FontAwesomeIcon
 						icon={faPen}
 						size="sm"
@@ -52,23 +109,51 @@ const Card = ({ card }) => {
 
 			<div
 				className="overlay"
-				style={{ display: isOpenCardActions ? "block" : "none" }}
-				onClick={handleOpenCardActions}
+				style={{ display: isOpenCardOption ? "block" : "none" }}
+				onClick={handleOpenCardOption}
 			></div>
 			<div
-				className="card-actions"
-				style={{ display: isOpenCardActions ? "block" : "none" }}
+				className="card-option"
+				style={{ display: isOpenCardOption ? "block" : "none" }}
 			>
-				<div className="card-action">
-					<FontAwesomeIcon icon={faTrash} />
-					<span>Delete</span>
+				<div className="rename-card">
+					<textarea
+						ref={renameCardRef}
+						rows={4}
+						onChange={handleChangeRenameCard}
+					>
+						{card.cardName}
+					</textarea>
+					<button
+						className="btn-save-card"
+						onClick={handleSaveRenameCard}
+					>
+						Save
+					</button>
 				</div>
-				<div
-					className="card-action"
-					onClick={() => handleArchivedCard(card.cardId)}
-				>
-					<FontAwesomeIcon icon={faBoxArchive} />
-					<span>Archive</span>
+				<div className="card-actions">
+					<div className="card-action">
+						<FontAwesomeIcon icon={faCopy} />
+						<span>Copy</span>
+					</div>
+					<div className="card-action">
+						<FontAwesomeIcon icon={faRightLong} />
+						<span>Move</span>
+					</div>
+					<div
+						className="card-action"
+						onClick={() => handleArchivedCard(card.cardId)}
+					>
+						<FontAwesomeIcon icon={faBoxArchive} />
+						<span>Archive</span>
+					</div>
+					<div
+						className="card-action"
+						onClick={() => handleDeleteCard(card.cardId)}
+					>
+						<FontAwesomeIcon icon={faTrash} />
+						<span>Delete</span>
+					</div>
 				</div>
 			</div>
 		</div>

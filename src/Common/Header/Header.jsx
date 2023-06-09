@@ -13,18 +13,27 @@ import {
 	faXmark,
 } from "@fortawesome/free-solid-svg-icons"
 import { initNewBoard } from "../../components/Initial/initialData"
-import { useContext, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { AuthContext } from "../../components/Context/AuthContext"
 import { v4 as uuid } from "uuid"
+import { StateContext } from "../../components/Context/StateContext"
 
 const Header = () => {
 	const { data, setData, alert, setAlert } = useContext(AuthContext)
+	const { stateOpen, setStateOpen, handleOpenBoards } =
+		useContext(StateContext)
 	const [newBoard, setNewBoard] = useState(initNewBoard)
-	const [isOpenCreateBoard, setIsOpenCreateBoard] = useState(false)
-	const [isOpenBoards, setIsOpenBoards] = useState(false)
+	const createBoardRef = useRef(null)
+
+	useEffect(() => {
+		if (stateOpen.createBoard) createBoardRef.current.focus()
+	}, [stateOpen.createBoard])
 
 	const handleOpenCreateBoard = () => {
-		setIsOpenCreateBoard(!isOpenCreateBoard)
+		setStateOpen({
+			...stateOpen,
+			createBoard: !stateOpen.createBoard,
+		})
 	}
 
 	const handleChangeBoardName = (e) => {
@@ -71,7 +80,10 @@ const Header = () => {
 			})
 		} else {
 			setData([newBoard, ...data])
-			setIsOpenCreateBoard(!isOpenCreateBoard)
+			setStateOpen({
+				...stateOpen,
+				createBoard: !stateOpen.createBoard,
+			})
 			resetNewBoard()
 		}
 	}
@@ -97,10 +109,6 @@ const Header = () => {
 		)
 	}
 
-	const handleOpenBoards = () => {
-		setIsOpenBoards(!isOpenBoards)
-	}
-
 	return (
 		<div className="header">
 			<div className="left">
@@ -110,7 +118,7 @@ const Header = () => {
 
 				<div
 					className="boards"
-					style={{ display: isOpenBoards ? "block" : "none" }}
+					style={{ display: stateOpen.yourBoards ? "block" : "none" }}
 				>
 					<span onClick={handleOpenBoards}>
 						<FontAwesomeIcon icon={faXmark} />
@@ -171,7 +179,7 @@ const Header = () => {
 					Create
 				</button>
 				<div
-					style={{ display: isOpenCreateBoard ? "flex" : "none" }}
+					style={{ display: stateOpen.createBoard ? "flex" : "none" }}
 					className="new-board"
 				>
 					<span onClick={handleOpenCreateBoard}>
@@ -179,6 +187,7 @@ const Header = () => {
 					</span>
 					<h3 className="title-new-board">Board title</h3>
 					<input
+						ref={createBoardRef}
 						type="text"
 						name="new-board-title"
 						value={newBoard.boardName}

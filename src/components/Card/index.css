@@ -42,9 +42,33 @@
 	right: 0;
 }
 
+.cards .card .card-option {
+	position: relative;
+}
+
+.cards .card .card-option .rename-card {
+	position: absolute;
+	width: 256px;
+	left: -256px;
+	z-index: 2;
+}
+
+.cards .card .card-option .btn-save-card {
+	margin-top: 6px;
+	padding: 10px 20px;
+	background-color: #0079bf;
+	border: none;
+	border-radius: 3px;
+	color: #fff;
+}
+
+.cards .card .card-option .btn-save-card:hover {
+	background-color: #038cdb;
+}
+
 .cards .card .card-actions {
 	position: absolute;
-	right: -100px;
+	left: 8px;
 	z-index: 2;
 }
 

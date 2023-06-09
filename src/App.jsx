@@ -6,6 +6,7 @@ import Board from "./components/Board/Board"
 import { AuthProvider } from "./components/Context/AuthContext"
 import { FormProvider } from "./components/Context/FormContext"
 import Notify from "./components/Notify/Notify"
+import StateProvider from "./components/Context/StateContext"
 
 function App() {
 	return (
@@ -13,11 +14,13 @@ function App() {
 			<AuthProvider>
 				<Notify />
 				<FormProvider>
-					<Routes>
-						<Route path="/" element={<Board />} />
-						<Route path="/signup" element={<SignUp />} />
-						<Route path="/login" element={<Login />} />
-					</Routes>
+					<StateProvider>
+						<Routes>
+							<Route path="/" element={<Board />} />
+							<Route path="/signup" element={<SignUp />} />
+							<Route path="/login" element={<Login />} />
+						</Routes>
+					</StateProvider>
 				</FormProvider>
 			</AuthProvider>
 		</Router>

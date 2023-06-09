@@ -3,7 +3,6 @@ import "./index.css"
 import {
 	faBolt,
 	faChevronDown,
-	faEllipsis,
 	faFilter,
 	faRocket,
 	faStar,
@@ -63,7 +62,7 @@ const SubHeader = ({ board }) => {
 
 	useEffect(() => {
 		if (isRenameBoard) {
-			inputRef.current.focus()
+			inputRef.current.select()
 		}
 	}, [isRenameBoard])
 
@@ -76,12 +75,6 @@ const SubHeader = ({ board }) => {
 						className="rename-board"
 						style={{
 							display: isRenameBoard ? "block" : "none",
-							color: "black",
-							width: "fit-content",
-							padding: "0 12px",
-							outline: "2px solid blue",
-							border: "none",
-							borderRadius: "3px",
 						}}
 						onChange={handleChange}
 						onBlur={handleCloseRenameBoard}
