@@ -1,8 +1,9 @@
 .lists .list {
-	padding: 8px;
+	padding: 8px 0 8px 8px;
 	background-color: #ebecf0;
 	min-width: 272px;
 	max-width: 272px;
+	max-height: 100%;
 	border-radius: 3px;
 	display: flex;
 	flex-direction: column;
@@ -30,6 +31,23 @@
 	flex-direction: column;
 	gap: 8px;
 	color: #002970;
+	overflow-y: hidden;
+	overflow-x: visible;
+	padding-right: 4px;
+	margin-right: 4px;
+}
+
+.lists .list .cards::-webkit-scrollbar {
+	-webkit-appearance: none;
+}
+
+.lists .list .cards::-webkit-scrollbar:vertical {
+	width: 8px;
+}
+
+.lists .list .cards::-webkit-scrollbar-thumb {
+	background-color: rgba(100, 100, 111, 0.2);
+	border-radius: 3px;
 }
 
 .lists .list .card {
@@ -38,6 +56,7 @@
 	display: flex;
 	box-shadow: 0 8px 8px -4px rgb(188, 193, 194);
 }
+
 .lists .list .card p {
 	padding: 10px 0 10px 8px;
 }
@@ -49,6 +68,7 @@
 }
 
 .lists .list .add-card {
+	margin-right: 8px;
 	cursor: pointer;
 }
 

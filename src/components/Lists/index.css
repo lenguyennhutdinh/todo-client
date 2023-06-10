@@ -7,3 +7,16 @@
 	gap: 8px;
 	overflow: auto;
 }
+
+.lists::-webkit-scrollbar {
+	-webkit-appearance: none;
+}
+
+.lists::-webkit-scrollbar:horizontal {
+	height: 12px;
+}
+
+.lists::-webkit-scrollbar-thumb {
+	background-color: rgba(0, 0, 0, 0.3);
+	border-radius: 6px;
+}
