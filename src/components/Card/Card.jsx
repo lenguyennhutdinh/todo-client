@@ -10,12 +10,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import "./index.css"
 import { useContext, useEffect, useRef, useState } from "react"
 import { AuthContext } from "../Context/AuthContext"
+import { StateContext } from "../Context/StateContext"
 
-const Card = ({ card }) => {
+const Card = (props) => {
+	const { listId, card } = props
 	const { setData } = useContext(AuthContext)
+	const { lists, setLists, mapBoardAndData } = useContext(StateContext)
 	const renameCardRef = useRef(null)
 	const [isOpenCardOption, setIsOpenCardOption] = useState(false)
-	const [newNameCard, setNewNameCard] = useState(card.cardName)
+	const [newCardName, setNewCardName] = useState(card.cardName)
 	useEffect(() => {
 		if (isOpenCardOption) renameCardRef.current.select()
 	}, [isOpenCardOption])
@@ -26,72 +29,65 @@ const Card = ({ card }) => {
 
 	const handleChangeRenameCard = (e) => {
 		const { value } = e.target
-		setNewNameCard(value)
+		setNewCardName(value)
 	}
 
 	const handleSaveRenameCard = () => {
 		const { cardId } = card
-		setData((prevBoards) =>
-			prevBoards.map((board) => {
-				if (board.boardId === prevBoards[0].boardId) {
-					const updatedLists = board.lists.map((list) => {
-						const updatedCards = list.cards.map((card) => {
-							if (card.cardId === cardId) {
-								return {
-									...card,
-									cardName: newNameCard,
-								}
+		const newLists = lists.map((list) => {
+			if (list.listId === listId)
+				return {
+					...list,
+					cards: list.cards.map((card) => {
+						if (card.cardId === cardId)
+							return {
+								...card,
+								cardName: newCardName,
 							}
-							return card
-						})
-						return {
-							...list,
-							cards: updatedCards,
-						}
-					})
-					return {
-						...board,
-						lists: updatedLists,
-					}
+						return card
+					}),
 				}
-				return board
-			})
-		)
+			return list
+		})
+		setLists(newLists)
+
+		mapBoardAndData(newLists)
 		setIsOpenCardOption(!isOpenCardOption)
 	}
 
-	const handleDeleteCard = (cardId) => {
-		setData((prevBoards) =>
-			prevBoards.map((board) => ({
-				...board,
-				lists: board.lists.map((list) => ({
+	const handleDeleteCard = (listId, cardId) => {
+		const newLists = lists.map((list) => {
+			if (list.listId === listId)
+				return {
 					...list,
-					cards: list.cards.filter((card) => {
-						return card.cardId !== cardId
-					}),
-				})),
-			}))
-		)
+					cards: list.cards.filter((card) => card.cardId !== cardId),
+				}
+			return list
+		})
+		setLists(newLists)
+
+		mapBoardAndData(newLists)
 	}
 
-	const handleArchivedCard = (cardId) => {
-		setData((prevBoards) =>
-			prevBoards.map((board) => ({
-				...board,
-				lists: board.lists.map((list) => ({
+	const handleArchivedCard = (listId, cardId) => {
+		const newLists = lists.map((list) => {
+			if (list.listId === listId)
+				return {
 					...list,
 					cards: list.cards.map((card) => {
-						if (card.cardId === cardId) {
+						if (card.cardId === cardId)
 							return {
 								...card,
 								isArchived: true,
 							}
-						}
 						return card
 					}),
-				})),
-			}))
-		)
+				}
+			return list
+		})
+		setLists(newLists)
+
+		mapBoardAndData(newLists)
 	}
 
 	return (
@@ -120,10 +116,9 @@ const Card = ({ card }) => {
 					<textarea
 						ref={renameCardRef}
 						rows={4}
+						value={newCardName}
 						onChange={handleChangeRenameCard}
-					>
-						{card.cardName}
-					</textarea>
+					></textarea>
 					<button
 						className="btn-save-card"
 						onClick={handleSaveRenameCard}
@@ -142,14 +137,14 @@ const Card = ({ card }) => {
 					</div>
 					<div
 						className="card-action"
-						onClick={() => handleArchivedCard(card.cardId)}
+						onClick={() => handleArchivedCard(listId, card.cardId)}
 					>
 						<FontAwesomeIcon icon={faBoxArchive} />
 						<span>Archive</span>
 					</div>
 					<div
 						className="card-action"
-						onClick={() => handleDeleteCard(card.cardId)}
+						onClick={() => handleDeleteCard(listId, card.cardId)}
 					>
 						<FontAwesomeIcon icon={faTrash} />
 						<span>Delete</span>

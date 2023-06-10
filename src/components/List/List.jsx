@@ -7,10 +7,12 @@ import Card from "../Card/Card"
 import { AuthContext } from "../Context/AuthContext"
 import { v4 as uuid } from "uuid"
 import { StateContext } from "../Context/StateContext"
+import { Container, Draggable } from "react-smooth-dnd"
 
-const List = ({ listId, list }) => {
-	const { setData } = useContext(AuthContext)
-	const { createCardRef } = useContext(StateContext)
+const List = (props) => {
+	const { listId, list, onCardDrop } = props
+	const { lists, setLists, mapBoardAndData, createCardRef } =
+		useContext(StateContext)
 	const renameListRef = useRef(null)
 	const [isOpenListActions, setIsOpenListActions] = useState(false)
 	const [isOpenAddCard, setIsOpenAddCard] = useState(false)
@@ -27,26 +29,19 @@ const List = ({ listId, list }) => {
 	const handleChangeRenameList = (e) => {
 		const { listId } = list
 		const { value } = e.target
-		setData((prevBoards) =>
-			prevBoards.map((board) => {
-				if (board.boardId === prevBoards[0].boardId) {
-					const updatedLists = board.lists.map((list) => {
-						if (list.listId === listId) {
-							return {
-								...list,
-								listName: value,
-							}
-						}
-						return list
-					})
-					return {
-						...board,
-						lists: updatedLists,
-					}
+		const newLists = lists.map((list) => {
+			if (list.listId === listId) {
+				return {
+					...list,
+					listName: value,
 				}
-				return board
-			})
-		)
+			}
+
+			return list
+		})
+		setLists(newLists)
+
+		mapBoardAndData(newLists)
 	}
 
 	const handleOpenAddCard = () => {
@@ -58,32 +53,27 @@ const List = ({ listId, list }) => {
 	}
 
 	const handleDeleteList = (listId) => {
-		setData((prevBoards) =>
-			prevBoards.map((board) => {
-				if (board.boardId === prevBoards[0].boardId) {
-					const updatedLists = board.lists.filter(
-						(list) => list.listId !== listId
-					)
-					return {
-						...board,
-						lists: updatedLists,
-					}
-				}
-				return board
-			})
-		)
+		const newLists = lists.filter((list) => {
+			return list.listId !== listId
+		})
+		setLists(newLists)
+
+		mapBoardAndData(newLists)
 	}
 
-	const handleArchivedList = (id) => {
-		setData((prevBoards) =>
-			prevBoards.map((board) => ({
-				...board,
-				lists: board.lists.map((list) => ({
+	const handleArchivedList = (listId) => {
+		const newLists = lists.map((list) => {
+			if (list.listId === listId) {
+				return {
 					...list,
-					isArchived: list.listId === id ? true : list.isArchived,
-				})),
-			}))
-		)
+					isArchived: true,
+				}
+			}
+			return list
+		})
+		setLists(newLists)
+
+		mapBoardAndData(newLists)
 	}
 
 	return (
@@ -103,36 +93,50 @@ const List = ({ listId, list }) => {
 				value={list.listName}
 				style={{ display: isOpenRenameList ? "block" : "none" }}
 			/>
+
 			<div className="cards">
-				<>
+				<Container
+					groupName="col"
+					onDrop={(dropResult) => onCardDrop(dropResult, listId)}
+					getChildPayload={(index) => list.cards[index]}
+					dragClass="card-ghost"
+					dropClass="card-ghost-drop"
+					dropPlaceholder={{
+						animationDuration: 150,
+						showOnTop: true,
+						className: "card-drop-preview",
+					}}
+					dropPlaceholderAnimationDuration={200}
+				>
 					{list.cards.map(
 						(card) =>
 							card.isArchived || (
-								<Card key={card.cardId} card={card} />
+								<Draggable key={card.cardId}>
+									<Card listId={list.listId} card={card} />
+								</Draggable>
 							)
 					)}
-				</>
-			</div>
 
-			<div className="add-card">
-				<div
-					onClick={handleOpenAddCard}
-					className="open-add-card"
-					style={{ display: isOpenAddCard ? "none" : "flex" }}
-				>
-					<FontAwesomeIcon icon={faPlus} />
-					<span>Add new card</span>
-				</div>
-				<AddCard
-					key={uuid()}
-					createCardRef={createCardRef}
-					list={list}
-					onClose={handleOpenAddCard}
-					isOpenAddCard={isOpenAddCard}
-					handleOpenAddCard={handleOpenAddCard}
-				/>
+					<div className="add-card">
+						<div
+							onClick={handleOpenAddCard}
+							className="open-add-card"
+							style={{ display: isOpenAddCard ? "none" : "flex" }}
+						>
+							<FontAwesomeIcon icon={faPlus} />
+							<span>Add new card</span>
+						</div>
+						<AddCard
+							key={uuid()}
+							createCardRef={createCardRef}
+							list={list}
+							onClose={handleOpenAddCard}
+							isOpenAddCard={isOpenAddCard}
+							handleOpenAddCard={handleOpenAddCard}
+						/>
+					</div>
+				</Container>
 			</div>
-
 			<span className="open-list-actions" onClick={handleOpenListActions}>
 				<FontAwesomeIcon icon={faEllipsis} />
 			</span>

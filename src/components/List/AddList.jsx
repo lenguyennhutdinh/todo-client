@@ -4,9 +4,11 @@ import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons"
 import { useContext, useEffect, useRef, useState } from "react"
 import { AuthContext } from "../Context/AuthContext"
 import { v4 as uuid } from "uuid"
+import { StateContext } from "../Context/StateContext"
 
 const AddList = () => {
-	const { setData } = useContext(AuthContext)
+	const { data, setData } = useContext(AuthContext)
+	const { lists, setLists, board, setBoard } = useContext(StateContext)
 	const [isOpenAddList, setIsOpenAddList] = useState(false)
 	const [newListName, setNewListName] = useState("")
 	const addListRef = useRef(null)
@@ -27,23 +29,23 @@ const AddList = () => {
 	}
 
 	const handleAddList = () => {
-		setData((prevBoards) =>
-			prevBoards.map((board) => {
-				if (board.boardId === prevBoards[0].boardId) {
-					const newList = {
-						listId: uuid(),
-						listName: newListName,
-						isArchived: false,
-						cards: [],
-					}
-					return {
-						...board,
-						lists: [...board.lists, newList],
-					}
-				}
-				return board
-			})
-		)
+		const boardId = board.boardId
+		const newList = {
+			listId: uuid(),
+			listName: newListName,
+			isArchived: false,
+			cards: [],
+		}
+		const newBoard = { ...board }
+		newBoard.lists.push(newList)
+
+		const newData = data.map((board) => {
+			if (board.boardId === boardId) {
+				return newBoard
+			}
+			return board
+		})
+		setData(newData)
 		setNewListName("")
 	}
 

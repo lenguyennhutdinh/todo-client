@@ -31,10 +31,10 @@
 	flex-direction: column;
 	gap: 8px;
 	color: #002970;
-	overflow-y: hidden;
-	overflow-x: visible;
 	padding-right: 4px;
 	margin-right: 4px;
+	max-height: calc(100vh - 44px - 57px - 76px);
+	overflow-y: auto;
 }
 
 .lists .list .cards::-webkit-scrollbar {
@@ -42,7 +42,7 @@
 }
 
 .lists .list .cards::-webkit-scrollbar:vertical {
-	width: 8px;
+	width: 6px;
 }
 
 .lists .list .cards::-webkit-scrollbar-thumb {
@@ -68,7 +68,6 @@
 }
 
 .lists .list .add-card {
-	margin-right: 8px;
 	cursor: pointer;
 }
 
@@ -160,7 +159,7 @@
 	color: gray;
 }
 
-.lists .list .vertical {
+.lists .list-actions .vertical {
 	border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 	margin: 6px 12px;
 }
@@ -196,6 +195,7 @@
 	padding: 12px 16px;
 	background-color: rgba(255, 255, 255, 0.3);
 	cursor: pointer;
+	height: fit-content;
 }
 
 .lists .list.add-list:hover {
@@ -208,6 +208,7 @@
 	background-color: #ebecf0;
 	border-radius: 3px;
 	min-width: 272px;
+	height: fit-content;
 }
 
 .lists .new-list input {
@@ -234,4 +235,21 @@
 .lists .new-list .fa-xmark {
 	margin-left: 12px;
 	font-size: 2.2rem;
+}
+
+.card-ghost {
+	transition: transform 0.18s ease;
+	transform: rotateZ(5deg);
+	font-weight: bolder;
+}
+
+.card-ghost-drop {
+	transition: transform 0.18s ease-in-out;
+	transform: rotateZ(0deg);
+}
+
+.card-drop-preview {
+	background-color: rgba(150, 150, 200, 0.1);
+	border: 1px dashed #abc;
+	margin: 5px;
 }

@@ -12,7 +12,6 @@ import {
 	faUser,
 	faXmark,
 } from "@fortawesome/free-solid-svg-icons"
-import { initNewBoard } from "../../components/Initial/initialData"
 import { useContext, useEffect, useRef, useState } from "react"
 import { AuthContext } from "../../components/Context/AuthContext"
 import { v4 as uuid } from "uuid"
@@ -20,9 +19,15 @@ import { StateContext } from "../../components/Context/StateContext"
 
 const Header = () => {
 	const { data, setData, alert, setAlert } = useContext(AuthContext)
-	const { stateOpen, setStateOpen, handleOpenBoards } =
-		useContext(StateContext)
-	const [newBoard, setNewBoard] = useState(initNewBoard)
+	const {
+		setLists,
+		board,
+		setBoard,
+		stateOpen,
+		setStateOpen,
+		handleOpenBoards,
+	} = useContext(StateContext)
+	const [newBoardName, setNewBoardName] = useState("")
 	const createBoardRef = useRef(null)
 
 	useEffect(() => {
@@ -38,14 +43,11 @@ const Header = () => {
 
 	const handleChangeBoardName = (e) => {
 		const { value } = e.target
-		setNewBoard({
-			...newBoard,
-			boardName: value,
-		})
+		setNewBoardName(value)
 	}
 
 	const resetNewBoard = () => {
-		setNewBoard({
+		return {
 			boardId: uuid(),
 			boardName: "",
 			lists: [
@@ -68,45 +70,55 @@ const Header = () => {
 					cards: [],
 				},
 			],
-		})
+		}
 	}
 
 	const handleCreateBoard = () => {
-		if (newBoard.boardName.length < 3) {
+		if (newBoardName.length < 3) {
 			setAlert({
 				isAlert: !alert.isAlert,
 				message: "Enter at least 3 characters in the title board",
 				severity: "warning",
 			})
 		} else {
-			setData([newBoard, ...data])
+			const newBoard = {
+				...resetNewBoard(),
+				boardName: newBoardName,
+			}
+			setLists(newBoard.lists)
+			setBoard(newBoard)
+			setData([...data, newBoard])
 			setStateOpen({
 				...stateOpen,
 				createBoard: !stateOpen.createBoard,
 			})
-			resetNewBoard()
+			setNewBoardName("")
 		}
 	}
 
-	const handleChangeBoard = (id) => {
-		const currentBoard = []
-		const restBoards = []
-		data.forEach((board) => {
-			if (board.boardId === id) {
-				currentBoard.push(board)
-			} else {
-				restBoards.push(board)
-			}
-		})
-		const newBoards = [...currentBoard, ...restBoards]
-		setData(newBoards)
+	const handleMoveBoard = (boardId) => {
+		const currentBoard = data.find((board) => board.boardId === boardId)
+		setLists(currentBoard.lists)
+		setBoard(currentBoard)
 	}
 
-	const handleDeleteBoard = (id) => {
-		console.log(`Deleting ${id}`)
-		setData((prevBoards) =>
-			prevBoards.filter((board) => board.boardId !== id)
-		)
+	const handleDeleteBoard = (boardId) => {
+		if (data.length === 1) {
+			setAlert({
+				isAlert: !alert.isAlert,
+				message: "All data cannot be deleted",
+				severity: "error",
+			})
+		} else {
+			const newData = data.filter((board) => board.boardId !== boardId)
+			setData(newData)
+			if (boardId === board.boardId) {
+				setTimeout(() => {
+					setBoard(newData[newData.length - 1])
+					setLists(newData[newData.length - 1].lists)
+				}, 1000)
+			}
+		}
 	}
 
 	return (
@@ -128,7 +140,7 @@ const Header = () => {
 						{data.map((board) => (
 							<li
 								key={board.boardId}
-								onClick={() => handleChangeBoard(board.boardId)}
+								onClick={() => handleMoveBoard(board.boardId)}
 							>
 								<a href="#!">{board.boardName}</a>
 								<span
@@ -190,7 +202,7 @@ const Header = () => {
 						ref={createBoardRef}
 						type="text"
 						name="new-board-title"
-						value={newBoard.boardName}
+						value={newBoardName}
 						onChange={handleChangeBoardName}
 					/>
 					<button

@@ -15,27 +15,32 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { signOut } from "firebase/auth"
 import { auth } from "../../firebase/config"
 import { AuthContext } from "../../components/Context/AuthContext"
+import { StateContext } from "../../components/Context/StateContext"
 
-const SubHeader = ({ board }) => {
-	const { setData, navigate } = useContext(AuthContext)
-
+const SubHeader = () => {
+	const { data, setData, navigate } = useContext(AuthContext)
+	const { board, setBoard } = useContext(StateContext)
 	const [isRenameBoard, setIsRenameBoard] = useState(false)
 
 	const inputRef = useRef(null) // Create a ref for the input field
 
 	const handleChange = (e) => {
 		const { value } = e.target
-		setData((prevBoards) =>
-			prevBoards.map((board) => {
-				if (board.boardId === prevBoards[0].boardId) {
-					return {
-						...board,
-						boardName: value,
-					}
+		const boardId = board.boardId
+		const newData = data.map((board) => {
+			if (board.boardId === boardId) {
+				return {
+					...board,
+					boardName: value,
 				}
-				return board
-			})
-		)
+			}
+			return board
+		})
+		setBoard({
+			...board,
+			boardName: value,
+		})
+		setData(newData)
 	}
 
 	const handleEnter = (e) => {

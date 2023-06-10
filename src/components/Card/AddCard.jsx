@@ -3,15 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useContext, useEffect, useRef, useState } from "react"
 import { AuthContext } from "../Context/AuthContext"
 import { v4 as uuid } from "uuid"
+import { StateContext } from "../Context/StateContext"
 
-const AddCard = ({
-	list,
-	isOpenAddCard,
-	handleOpenAddCard,
-	onClose,
-	createCardRef,
-}) => {
-	const { setData } = useContext(AuthContext)
+const AddCard = (props) => {
+	const { list, isOpenAddCard, onClose, createCardRef } = props
+	const { lists, setLists, mapBoardAndData } = useContext(StateContext)
+
 	const [newTitleCard, setNewTitleCard] = useState("")
 	const addCardRef = useRef(null)
 
@@ -21,31 +18,21 @@ const AddCard = ({
 	}
 
 	const handleAddCard = (listId) => {
-		setData((prevBoards) =>
-			prevBoards.map((board) => {
-				if (board.boardId === prevBoards[0].boardId) {
-					const updatedLists = board.lists.map((list) => {
-						if (list.listId === listId) {
-							const newCard = {
-								cardId: uuid(),
-								cardName: newTitleCard,
-								isArchived: false,
-							}
-							return {
-								...list,
-								cards: [...list.cards, newCard],
-							}
-						}
-						return list
-					})
-					return {
-						...board,
-						lists: updatedLists,
-					}
+		const newCard = {
+			cardId: uuid(),
+			cardName: newTitleCard,
+			isArchived: false,
+		}
+		const newLists = lists.map((list) => {
+			if (list.listId === listId)
+				return {
+					...list,
+					cards: [...list.cards, newCard],
 				}
-				return board
-			})
-		)
+			return list
+		})
+		setLists(newLists)
+		mapBoardAndData(newLists)
 	}
 
 	useEffect(() => {

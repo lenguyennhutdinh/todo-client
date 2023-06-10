@@ -5,7 +5,21 @@
 	display: flex;
 	align-items: flex-start;
 	gap: 8px;
-	overflow: auto;
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+.lists .smooth-dnd-container.horizontal {
+	display: flex;
+	gap: 8px;
+}
+
+.lists .smooth-dnd-container.vertical {
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	min-height: 5px;
 }
 
 .lists::-webkit-scrollbar {
@@ -19,4 +33,10 @@
 .lists::-webkit-scrollbar-thumb {
 	background-color: rgba(0, 0, 0, 0.3);
 	border-radius: 6px;
+}
+
+.list-drop-preview {
+	background-color: rgba(150, 150, 200, 0.1);
+	border: 1px dashed #abc;
+	margin: 5px 45px 5px 5px;
 }
