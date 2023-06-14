@@ -2,13 +2,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import "./index.css"
 import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons"
 import { useContext, useEffect, useRef, useState } from "react"
-import { AuthContext } from "../Context/AuthContext"
-import { v4 as uuid } from "uuid"
 import { StateContext } from "../Context/StateContext"
-
+import { createNewList } from "../../services/lists"
+import { v4 as uuid } from "uuid"
+import { AuthContext } from "../Context/AuthContext"
 const AddList = () => {
 	const { data, setData } = useContext(AuthContext)
-	const { lists, setLists, board, setBoard } = useContext(StateContext)
+	const { lists, setLists, board, setBoard, mapBoardAndData } =
+		useContext(StateContext)
 	const [isOpenAddList, setIsOpenAddList] = useState(false)
 	const [newListName, setNewListName] = useState("")
 	const addListRef = useRef(null)
@@ -28,25 +29,29 @@ const AddList = () => {
 		setNewListName(value)
 	}
 
-	const handleAddList = () => {
-		const boardId = board.boardId
+	const handleAddList = async () => {
 		const newList = {
-			listId: uuid(),
+			_id: uuid(),
 			listName: newListName,
+			boardId: board._id,
 			isArchived: false,
-			cards: [],
+			positionCards: [],
 		}
-		const newBoard = { ...board }
-		newBoard.lists.push(newList)
+		console.log("add list", newList._id)
+
+		const newBoard = {
+			...board,
+			positionLists: [...board.positionLists, newList._id],
+		}
+		setBoard(newBoard)
 
 		const newData = data.map((board) => {
-			if (board.boardId === boardId) {
-				return newBoard
-			}
+			if (board._id === newBoard._id) return newBoard
 			return board
 		})
 		setData(newData)
 		setNewListName("")
+		await createNewList(newList)
 	}
 
 	return (

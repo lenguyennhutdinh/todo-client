@@ -4,19 +4,35 @@ import { faEllipsis, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import AddCard from "../Card/AddCard"
 import Card from "../Card/Card"
-import { AuthContext } from "../Context/AuthContext"
 import { v4 as uuid } from "uuid"
 import { StateContext } from "../Context/StateContext"
 import { Container, Draggable } from "react-smooth-dnd"
+import { getCardsByListId } from "../../services/cards"
+import {
+	archivedListById,
+	deleteListById,
+	renameListById,
+} from "../../services/lists"
 
 const List = (props) => {
-	const { listId, list, onCardDrop } = props
-	const { lists, setLists, mapBoardAndData, createCardRef } =
+	const { list, onCardDrop } = props
+	const { lists, setLists, board, setBoard, createCardRef } =
 		useContext(StateContext)
 	const renameListRef = useRef(null)
+	const [cards, setCards] = useState()
+	const [newListName, setNewListName] = useState(list.listName)
 	const [isOpenListActions, setIsOpenListActions] = useState(false)
 	const [isOpenAddCard, setIsOpenAddCard] = useState(false)
 	const [isOpenRenameList, setIsOpenRenameList] = useState(false)
+
+	const getCardsDB = async () => {
+		const cardsDB = await getCardsByListId(list._id)
+		setCards(cardsDB)
+	}
+
+	useEffect(() => {
+		getCardsDB()
+	}, [list])
 
 	useEffect(() => {
 		if (isOpenRenameList) renameListRef.current.focus()
@@ -24,24 +40,6 @@ const List = (props) => {
 
 	const handleOpenRenameList = () => {
 		setIsOpenRenameList(!isOpenRenameList)
-	}
-
-	const handleChangeRenameList = (e) => {
-		const { listId } = list
-		const { value } = e.target
-		const newLists = lists.map((list) => {
-			if (list.listId === listId) {
-				return {
-					...list,
-					listName: value,
-				}
-			}
-
-			return list
-		})
-		setLists(newLists)
-
-		mapBoardAndData(newLists)
 	}
 
 	const handleOpenAddCard = () => {
@@ -52,18 +50,48 @@ const List = (props) => {
 		setIsOpenListActions(!isOpenListActions)
 	}
 
-	const handleDeleteList = (listId) => {
-		const newLists = lists.filter((list) => {
-			return list.listId !== listId
-		})
-		setLists(newLists)
-
-		mapBoardAndData(newLists)
+	const handleEnter = (e) => {
+		if (e.keyCode === 13) {
+			e.target.blur()
+		}
 	}
 
-	const handleArchivedList = (listId) => {
+	const handleBlurRenameList = async () => {
+		const listId = list._id
 		const newLists = lists.map((list) => {
-			if (list.listId === listId) {
+			if (list._id === listId) {
+				return {
+					...list,
+					listName: newListName,
+				}
+			}
+			return list
+		})
+		setLists(newLists)
+		setIsOpenRenameList(!isOpenRenameList)
+		await renameListById(listId, newListName)
+	}
+
+	const handleChangeRenameList = (e) => {
+		const { value } = e.target
+		setNewListName(value)
+	}
+
+	const handleDeleteList = async (listId) => {
+		await deleteListById(listId)
+		const newBoard = {
+			...board,
+			positionLists: board.positionLists.filter(
+				(position) => position !== listId
+			),
+		}
+		setBoard(newBoard)
+	}
+
+	const handleArchivedList = async (listId) => {
+		await archivedListById(listId)
+		const newLists = lists.map((list) => {
+			if (list._id === listId) {
 				return {
 					...list,
 					isArchived: true,
@@ -71,9 +99,8 @@ const List = (props) => {
 			}
 			return list
 		})
+		console.log(newLists)
 		setLists(newLists)
-
-		mapBoardAndData(newLists)
 	}
 
 	return (
@@ -89,16 +116,18 @@ const List = (props) => {
 				ref={renameListRef}
 				className="rename-list"
 				onChange={handleChangeRenameList}
-				onBlur={handleOpenRenameList}
-				value={list.listName}
+				onBlur={handleBlurRenameList}
+				onKeyUp={handleEnter}
+				value={newListName}
 				style={{ display: isOpenRenameList ? "block" : "none" }}
 			/>
 
 			<div className="cards">
 				<Container
 					groupName="col"
-					onDrop={(dropResult) => onCardDrop(dropResult, listId)}
-					getChildPayload={(index) => list.cards[index]}
+					onDrop={(dropResult) => onCardDrop(dropResult, list._id)}
+					// getChildPayload={(index) => list.cards[index]}
+					getChildPayload={(index) => list.positionCards[index]}
 					dragClass="card-ghost"
 					dropClass="card-ghost-drop"
 					dropPlaceholder={{
@@ -108,14 +137,15 @@ const List = (props) => {
 					}}
 					dropPlaceholderAnimationDuration={200}
 				>
-					{list.cards.map(
-						(card) =>
-							card.isArchived || (
-								<Draggable key={card.cardId}>
-									<Card listId={list.listId} card={card} />
-								</Draggable>
-							)
-					)}
+					{cards &&
+						cards.map(
+							(card) =>
+								card.isArchived || (
+									<Draggable key={card._Id}>
+										<Card card={card} setCards={setCards} />
+									</Draggable>
+								)
+						)}
 
 					<div className="add-card">
 						<div
@@ -156,11 +186,11 @@ const List = (props) => {
 					<span>Watch</span>
 					<div className="vertical"></div>
 					<span>Sort by...</span>
-					<span onClick={() => handleArchivedList(listId)}>
+					<span onClick={() => handleArchivedList(list._id)}>
 						Archived this list
 					</span>
 					<div className="vertical"></div>
-					<span onClick={() => handleDeleteList(listId)}>
+					<span onClick={() => handleDeleteList(list._id)}>
 						Delete this list
 					</span>
 				</div>

@@ -27,7 +27,6 @@
 
 .lists .list .cards {
 	display: flex;
-	position: relative;
 	flex-direction: column;
 	gap: 8px;
 	color: #002970;

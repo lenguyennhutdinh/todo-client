@@ -14,8 +14,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import { useContext, useEffect, useRef, useState } from "react"
 import { AuthContext } from "../../components/Context/AuthContext"
-import { v4 as uuid } from "uuid"
 import { StateContext } from "../../components/Context/StateContext"
+import {
+	createNewBoard,
+	deleteBoardById,
+	getBoardById,
+} from "../../services/boards"
 
 const Header = () => {
 	const { data, setData, alert, setAlert } = useContext(AuthContext)
@@ -46,34 +50,7 @@ const Header = () => {
 		setNewBoardName(value)
 	}
 
-	const resetNewBoard = () => {
-		return {
-			boardId: uuid(),
-			boardName: "",
-			lists: [
-				{
-					listId: uuid(),
-					listName: "To Do",
-					isArchived: false,
-					cards: [],
-				},
-				{
-					listId: uuid(),
-					listName: "Doing",
-					isArchived: false,
-					cards: [],
-				},
-				{
-					listId: uuid(),
-					listName: "Done",
-					isArchived: false,
-					cards: [],
-				},
-			],
-		}
-	}
-
-	const handleCreateBoard = () => {
+	const handleCreateBoard = async () => {
 		if (newBoardName.length < 3) {
 			setAlert({
 				isAlert: !alert.isAlert,
@@ -82,12 +59,12 @@ const Header = () => {
 			})
 		} else {
 			const newBoard = {
-				...resetNewBoard(),
 				boardName: newBoardName,
+				positionLists: [],
 			}
-			setLists(newBoard.lists)
-			setBoard(newBoard)
-			setData([...data, newBoard])
+			const newData = await createNewBoard(newBoard)
+			setData(newData)
+			setBoard(newData[newData.length - 1])
 			setStateOpen({
 				...stateOpen,
 				createBoard: !stateOpen.createBoard,
@@ -96,13 +73,14 @@ const Header = () => {
 		}
 	}
 
-	const handleMoveBoard = (boardId) => {
-		const currentBoard = data.find((board) => board.boardId === boardId)
-		setLists(currentBoard.lists)
-		setBoard(currentBoard)
+	const handleMoveBoard = async (boardId) => {
+		if (board._id !== boardId) {
+			const currentBoard = await getBoardById(boardId)
+			setBoard(currentBoard)
+		}
 	}
 
-	const handleDeleteBoard = (boardId) => {
+	const handleDeleteBoard = async (boardId) => {
 		if (data.length === 1) {
 			setAlert({
 				isAlert: !alert.isAlert,
@@ -110,13 +88,21 @@ const Header = () => {
 				severity: "error",
 			})
 		} else {
-			const newData = data.filter((board) => board.boardId !== boardId)
-			setData(newData)
-			if (boardId === board.boardId) {
-				setTimeout(() => {
-					setBoard(newData[newData.length - 1])
-					setLists(newData[newData.length - 1].lists)
-				}, 1000)
+			try {
+				await deleteBoardById(boardId)
+				const newData = data.filter((board) => board._id !== boardId)
+				setData(newData)
+				if (boardId === board._id) {
+					setTimeout(() => {
+						setBoard(newData[newData.length - 1])
+					}, 1000)
+				}
+			} catch (err) {
+				setAlert({
+					isAlert: !alert.isAlert,
+					message: err.message,
+					severity: "error",
+				})
 			}
 		}
 	}
@@ -139,14 +125,14 @@ const Header = () => {
 					<ul className="list-boards">
 						{data.map((board) => (
 							<li
-								key={board.boardId}
-								onClick={() => handleMoveBoard(board.boardId)}
+								key={board._id}
+								onClick={() => handleMoveBoard(board._id)}
 							>
 								<a href="#!">{board.boardName}</a>
 								<span
 									onClick={(e) => {
 										e.stopPropagation()
-										handleDeleteBoard(board.boardId)
+										handleDeleteBoard(board._id)
 									}}
 								>
 									<FontAwesomeIcon icon={faTrash} />
@@ -197,7 +183,7 @@ const Header = () => {
 					<span onClick={handleOpenCreateBoard}>
 						<FontAwesomeIcon icon={faXmark} />
 					</span>
-					<h3 className="title-new-board">Board title</h3>
+					<h3 className="new-board-title">Board title</h3>
 					<input
 						ref={createBoardRef}
 						type="text"

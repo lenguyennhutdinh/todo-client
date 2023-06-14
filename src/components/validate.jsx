@@ -1,17 +1,18 @@
 const validateEmail = (inputText) => {
 	if (inputText.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/))
 		return ""
-	return "Email không hợp lệ!"
+	return "Email is not valid!"
 }
 
 const validatePassword = (inputText, minLength, maxLength) => {
-	if (inputText.length < minLength) return "Mật khẩu tối thiểu 8 ký tự"
-	else if (inputText.length > maxLength) return "Mật khẩu tối đa 16 ký tự"
+	if (inputText.length < minLength)
+		return "Password must be at least 8 characters"
+	else if (inputText.length > maxLength) return "Password up to 16 characters"
 	else return ""
 }
 
 const validatePasswordConfirm = (password, passwordConfirm) => {
-	if (password !== passwordConfirm) return "Mật khẩu không khớp"
+	if (password !== passwordConfirm) return "Password doesn't match"
 	else return ""
 }
 

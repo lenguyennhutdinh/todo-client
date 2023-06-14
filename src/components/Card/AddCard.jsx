@@ -1,13 +1,13 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useContext, useEffect, useRef, useState } from "react"
-import { AuthContext } from "../Context/AuthContext"
 import { v4 as uuid } from "uuid"
 import { StateContext } from "../Context/StateContext"
+import { createNewCard } from "../../services/cards"
 
 const AddCard = (props) => {
 	const { list, isOpenAddCard, onClose, createCardRef } = props
-	const { lists, setLists, mapBoardAndData } = useContext(StateContext)
+	const { lists, setLists } = useContext(StateContext)
 
 	const [newTitleCard, setNewTitleCard] = useState("")
 	const addCardRef = useRef(null)
@@ -17,22 +17,23 @@ const AddCard = (props) => {
 		setNewTitleCard(value)
 	}
 
-	const handleAddCard = (listId) => {
+	const handleAddCard = async (listId) => {
 		const newCard = {
-			cardId: uuid(),
+			_id: uuid(),
+			listId: list._id,
 			cardName: newTitleCard,
 			isArchived: false,
 		}
 		const newLists = lists.map((list) => {
-			if (list.listId === listId)
+			if (list._id === listId)
 				return {
 					...list,
-					cards: [...list.cards, newCard],
+					positionCards: [...list.positionCards, newCard._id],
 				}
 			return list
 		})
 		setLists(newLists)
-		mapBoardAndData(newLists)
+		await createNewCard(newCard)
 	}
 
 	useEffect(() => {
@@ -58,7 +59,7 @@ const AddCard = (props) => {
 			></textarea>
 			<div className="row">
 				<button
-					onClick={() => handleAddCard(list.listId)}
+					onClick={() => handleAddCard(list._id)}
 					className="btn-add-card"
 				>
 					Add card

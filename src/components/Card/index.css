@@ -43,14 +43,12 @@
 }
 
 .cards .card .card-option {
-	position: relative;
+	position: fixed;
+	z-index: 2;
 }
 
 .cards .card .card-option .rename-card {
-	position: absolute;
 	width: 256px;
-	left: -256px;
-	z-index: 2;
 }
 
 .cards .card .card-option .btn-save-card {
@@ -67,9 +65,7 @@
 }
 
 .cards .card .card-actions {
-	position: fixed;
 	margin-left: 8px;
-	z-index: 2;
 }
 
 .cards .card .card-action {

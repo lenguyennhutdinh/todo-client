@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
 				setUserId(localStorage.getItem("userId"))
 				setAlert({
 					isAlert: !alert.isAlert,
-					message: "Đăng nhập thành công!",
+					message: "Login success!",
 					severity: "success",
 				})
 				navigate("/")

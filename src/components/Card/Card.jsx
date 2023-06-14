@@ -9,13 +9,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 import "./index.css"
 import { useContext, useEffect, useRef, useState } from "react"
-import { AuthContext } from "../Context/AuthContext"
 import { StateContext } from "../Context/StateContext"
+import {
+	archivedCardById,
+	deleteCardById,
+	getCardsByListId,
+	renameCardById,
+} from "../../services/cards"
 
 const Card = (props) => {
-	const { listId, card } = props
-	const { setData } = useContext(AuthContext)
-	const { lists, setLists, mapBoardAndData } = useContext(StateContext)
+	const { card, setCards } = props
+	const { lists, setLists } = useContext(StateContext)
 	const renameCardRef = useRef(null)
 	const [isOpenCardOption, setIsOpenCardOption] = useState(false)
 	const [newCardName, setNewCardName] = useState(card.cardName)
@@ -32,62 +36,43 @@ const Card = (props) => {
 		setNewCardName(value)
 	}
 
-	const handleSaveRenameCard = () => {
-		const { cardId } = card
-		const newLists = lists.map((list) => {
-			if (list.listId === listId)
-				return {
-					...list,
-					cards: list.cards.map((card) => {
-						if (card.cardId === cardId)
-							return {
-								...card,
-								cardName: newCardName,
-							}
-						return card
-					}),
-				}
-			return list
-		})
-		setLists(newLists)
-
-		mapBoardAndData(newLists)
+	const handleSaveRenameCard = async () => {
+		const cardId = card._id
+		await renameCardById(cardId, newCardName)
+		const cardsDB = await getCardsByListId(card.listId)
+		setCards(cardsDB)
 		setIsOpenCardOption(!isOpenCardOption)
 	}
 
-	const handleDeleteCard = (listId, cardId) => {
+	const handleDeleteCard = async (listId, cardId) => {
 		const newLists = lists.map((list) => {
 			if (list.listId === listId)
 				return {
 					...list,
-					cards: list.cards.filter((card) => card.cardId !== cardId),
+					positionCards: list.positionCards.filter(
+						(card) => card._id !== cardId
+					),
 				}
 			return list
 		})
 		setLists(newLists)
-
-		mapBoardAndData(newLists)
+		setIsOpenCardOption(!isOpenCardOption)
+		await deleteCardById(cardId)
 	}
 
-	const handleArchivedCard = (listId, cardId) => {
+	const handleArchivedCard = async (listId, cardId) => {
 		const newLists = lists.map((list) => {
 			if (list.listId === listId)
 				return {
 					...list,
-					cards: list.cards.map((card) => {
-						if (card.cardId === cardId)
-							return {
-								...card,
-								isArchived: true,
-							}
-						return card
-					}),
+					positionCards: list.positionCards.filter(
+						(card) => card._id !== cardId
+					),
 				}
 			return list
 		})
 		setLists(newLists)
-
-		mapBoardAndData(newLists)
+		await archivedCardById(cardId)
 	}
 
 	return (
@@ -110,7 +95,7 @@ const Card = (props) => {
 			></div>
 			<div
 				className="card-option"
-				style={{ display: isOpenCardOption ? "block" : "none" }}
+				style={{ display: isOpenCardOption ? "flex" : "none" }}
 			>
 				<div className="rename-card">
 					<textarea
@@ -137,14 +122,14 @@ const Card = (props) => {
 					</div>
 					<div
 						className="card-action"
-						onClick={() => handleArchivedCard(listId, card.cardId)}
+						onClick={() => handleArchivedCard(listId, card._id)}
 					>
 						<FontAwesomeIcon icon={faBoxArchive} />
 						<span>Archive</span>
 					</div>
 					<div
 						className="card-action"
-						onClick={() => handleDeleteCard(listId, card.cardId)}
+						onClick={() => handleDeleteCard(listId, card._id)}
 					>
 						<FontAwesomeIcon icon={faTrash} />
 						<span>Delete</span>

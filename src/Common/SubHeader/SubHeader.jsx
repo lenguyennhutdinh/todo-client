@@ -16,46 +16,61 @@ import { signOut } from "firebase/auth"
 import { auth } from "../../firebase/config"
 import { AuthContext } from "../../components/Context/AuthContext"
 import { StateContext } from "../../components/Context/StateContext"
+import { updateBoardNameById } from "../../services/boards"
 
 const SubHeader = () => {
-	const { data, setData, navigate } = useContext(AuthContext)
+	const { data, setData, setAlert, navigate } = useContext(AuthContext)
 	const { board, setBoard } = useContext(StateContext)
 	const [isRenameBoard, setIsRenameBoard] = useState(false)
 
-	const inputRef = useRef(null) // Create a ref for the input field
+	const inputRef = useRef(null)
 
-	const handleChange = (e) => {
+	const handleChange = async (e) => {
 		const { value } = e.target
-		const boardId = board.boardId
-		const newData = data.map((board) => {
-			if (board.boardId === boardId) {
-				return {
-					...board,
-					boardName: value,
-				}
+		const boardId = board._id
+		try {
+			const newBoard = {
+				...board,
+				boardName: value,
 			}
-			return board
-		})
-		setBoard({
-			...board,
-			boardName: value,
-		})
-		setData(newData)
+			setBoard(newBoard)
+			const newData = data.map((board) => {
+				if (board._id === boardId) {
+					return newBoard
+				}
+				return board
+			})
+			setData(newData)
+		} catch (err) {
+			setAlert({
+				isAlert: !alert.isAlert,
+				message: err.message,
+				severity: "error",
+			})
+		}
+	}
+
+	const handleBlurRenameBoard = async () => {
+		try {
+			await updateBoardNameById(board)
+			setIsRenameBoard(false)
+		} catch (err) {
+			setAlert({
+				isAlert: !alert.isAlert,
+				message: err.message,
+				severity: "error",
+			})
+		}
 	}
 
 	const handleEnter = (e) => {
 		if (e.keyCode === 13) {
-			console.log("enter")
 			e.target.blur()
 		}
 	}
 
 	const handleOpenRenameBoard = () => {
 		setIsRenameBoard(true)
-	}
-
-	const handleCloseRenameBoard = () => {
-		setIsRenameBoard(false)
 	}
 
 	const handleLogout = () => {
@@ -82,7 +97,7 @@ const SubHeader = () => {
 							display: isRenameBoard ? "block" : "none",
 						}}
 						onChange={handleChange}
-						onBlur={handleCloseRenameBoard}
+						onBlur={handleBlurRenameBoard}
 						onKeyUp={handleEnter}
 						value={board.boardName}
 					/>
