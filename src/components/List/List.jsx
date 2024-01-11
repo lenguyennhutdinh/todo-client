@@ -7,7 +7,6 @@ import Card from "../Card/Card"
 import { v4 as uuid } from "uuid"
 import { StateContext } from "../Context/StateContext"
 import { Container, Draggable } from "react-smooth-dnd"
-import { getCardsByListId } from "../../services/cards"
 import {
 	archivedListById,
 	deleteListById,
@@ -16,23 +15,13 @@ import {
 
 const List = (props) => {
 	const { list, onCardDrop } = props
-	const { lists, setLists, board, setBoard, createCardRef } =
-		useContext(StateContext)
+	const { lists, setLists, createCardRef } = useContext(StateContext)
 	const renameListRef = useRef(null)
-	const [cards, setCards] = useState()
 	const [newListName, setNewListName] = useState(list.listName)
 	const [isOpenListActions, setIsOpenListActions] = useState(false)
 	const [isOpenAddCard, setIsOpenAddCard] = useState(false)
 	const [isOpenRenameList, setIsOpenRenameList] = useState(false)
-
-	const getCardsDB = async () => {
-		const cardsDB = await getCardsByListId(list._id)
-		setCards(cardsDB)
-	}
-
-	useEffect(() => {
-		getCardsDB()
-	}, [list])
+	const listId = list._id
 
 	useEffect(() => {
 		if (isOpenRenameList) renameListRef.current.focus()
@@ -57,7 +46,6 @@ const List = (props) => {
 	}
 
 	const handleBlurRenameList = async () => {
-		const listId = list._id
 		const newLists = lists.map((list) => {
 			if (list._id === listId) {
 				return {
@@ -78,18 +66,11 @@ const List = (props) => {
 	}
 
 	const handleDeleteList = async (listId) => {
+		setLists((prevLists) => prevLists.filter((list) => list._id !== listId))
 		await deleteListById(listId)
-		const newBoard = {
-			...board,
-			positionLists: board.positionLists.filter(
-				(position) => position !== listId
-			),
-		}
-		setBoard(newBoard)
 	}
 
 	const handleArchivedList = async (listId) => {
-		await archivedListById(listId)
 		const newLists = lists.map((list) => {
 			if (list._id === listId) {
 				return {
@@ -101,6 +82,7 @@ const List = (props) => {
 		})
 		console.log(newLists)
 		setLists(newLists)
+		await archivedListById(listId)
 	}
 
 	return (
@@ -110,7 +92,7 @@ const List = (props) => {
 				onClick={handleOpenRenameList}
 				style={{ display: isOpenRenameList ? "none" : "block" }}
 			>
-				{list.listName}
+				{newListName}
 			</h2>
 			<input
 				ref={renameListRef}
@@ -126,8 +108,7 @@ const List = (props) => {
 				<Container
 					groupName="col"
 					onDrop={(dropResult) => onCardDrop(dropResult, list._id)}
-					// getChildPayload={(index) => list.cards[index]}
-					getChildPayload={(index) => list.positionCards[index]}
+					getChildPayload={(index) => list.cards[index]}
 					dragClass="card-ghost"
 					dropClass="card-ghost-drop"
 					dropPlaceholder={{
@@ -137,15 +118,14 @@ const List = (props) => {
 					}}
 					dropPlaceholderAnimationDuration={200}
 				>
-					{cards &&
-						cards.map(
-							(card) =>
-								card.isArchived || (
-									<Draggable key={card._Id}>
-										<Card card={card} setCards={setCards} />
-									</Draggable>
-								)
-						)}
+					{list?.cards?.map(
+						(card) =>
+							card.isArchived || (
+								<Draggable key={card._Id}>
+									<Card list={list} card={card} />
+								</Draggable>
+							)
+					)}
 
 					<div className="add-card">
 						<div

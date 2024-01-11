@@ -83,6 +83,19 @@ const renameListById = async (listId, newListName) => {
 	}
 }
 
+const updatePositionCardsListById = async (list) => {
+	try {
+		const response = await axios.put(
+			"http://localhost:5000/api/lists/positionCards/" + list._id,
+			list
+		)
+		return response.data
+	} catch (error) {
+		console.log(error)
+		return []
+	}
+}
+
 export {
 	getLists,
 	getListById,
@@ -91,4 +104,5 @@ export {
 	deleteListById,
 	archivedListById,
 	renameListById,
+	updatePositionCardsListById,
 }

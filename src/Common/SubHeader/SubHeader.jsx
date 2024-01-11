@@ -52,8 +52,8 @@ const SubHeader = () => {
 
 	const handleBlurRenameBoard = async () => {
 		try {
-			await updateBoardNameById(board)
 			setIsRenameBoard(false)
+			await updateBoardNameById(board)
 		} catch (err) {
 			setAlert({
 				isAlert: !alert.isAlert,

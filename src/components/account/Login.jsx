@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 const Login = () => {
 	const {
 		form,
+		setForm,
 		handleLoginWithGoogle,
 		handleLoginWithFacebook,
 		handleLoginWithEmail,
@@ -36,13 +37,16 @@ const Login = () => {
 		<div className="atlassian-brand">
 			<div>
 				<h1 className="title">
-					<FontAwesomeIcon icon={faCheckDouble} style={{color: "#0777e8"}} />
+					<FontAwesomeIcon
+						icon={faCheckDouble}
+						style={{ color: "#0777e8" }}
+					/>
 					<span>Todo</span>
 				</h1>
 				<section className="inner-section">
 					<div className="section-wrapper quick-switch">
 						<div className="layout-twothirds-center account-form">
-							<h1>Đăng nhập tài khoản</h1>
+							<h1>Login</h1>
 							<div className="login-password-container">
 								<form
 									onSubmit={handleSubmit}
@@ -52,7 +56,7 @@ const Login = () => {
 									<Input
 										type="text"
 										name="email"
-										placeholder={"Nhập email"}
+										placeholder={"Enter your email..."}
 										onChange={handleChange}
 										value={form.email}
 										errorMessage={errorMessage.email}
@@ -61,7 +65,7 @@ const Login = () => {
 									<Input
 										type="password"
 										name="password"
-										placeholder={"Nhập mật khẩu"}
+										placeholder={"Enter your password..."}
 										onChange={handleChange}
 										value={form.password}
 										errorMessage={errorMessage.password}
@@ -71,13 +75,13 @@ const Login = () => {
 										id="login"
 										type="submit"
 										className="button account-button button-green btn btn-success"
-										value="Đăng nhập"
+										value="Login"
 									/>
 								</form>
 								<div className="login-methods hide-when-two-factor">
 									<div className="login-oauth-container">
 										<div className="login-method-separator">
-											HOẶC
+											Or
 										</div>
 										<button
 											id="googleButton"
@@ -90,7 +94,7 @@ const Login = () => {
 												className="icon"
 											></span>
 											<span className="label">
-												Tiếp tục với Google
+												Continue with Google
 											</span>
 										</button>
 										<button
@@ -103,7 +107,7 @@ const Login = () => {
 												className="icon"
 											></span>
 											<span className="label">
-												Tiếp tục với Facebook
+												Continue with Facebook
 											</span>
 										</button>
 									</div>
@@ -117,7 +121,7 @@ const Login = () => {
 										to="/signup"
 										onClick={handleSwitchLoginSignup}
 									>
-										Chưa có tài khoản? Đăng ký
+										Don't have an account yet? Register
 									</Link>
 								</li>
 							</ul>

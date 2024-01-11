@@ -78,6 +78,7 @@
 	display: flex;
 	gap: 8px;
 	transition: left 2s;
+	cursor: pointer;
 }
 
 .cards .card .card-action:hover {

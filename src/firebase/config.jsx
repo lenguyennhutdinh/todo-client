@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app"
-import { getFirestore, collection, setDoc, doc } from "firebase/firestore"
+import { getFirestore } from "firebase/firestore"
 // import boards from "../components/Initial/initialData"
 import {
 	FacebookAuthProvider,
@@ -25,4 +25,4 @@ auth.setPersistence(browserSessionPersistence.NONE)
 const providerGoogle = new GoogleAuthProvider()
 const providerFacebook = new FacebookAuthProvider()
 
-export {db, auth, providerGoogle, providerFacebook }
+export { db, auth, providerGoogle, providerFacebook }

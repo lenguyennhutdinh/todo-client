@@ -29,6 +29,7 @@ const AddCard = (props) => {
 				return {
 					...list,
 					positionCards: [...list.positionCards, newCard._id],
+					cards: [...list.cards, newCard],
 				}
 			return list
 		})

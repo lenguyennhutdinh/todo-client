@@ -9,6 +9,18 @@ const getBoards = async () => {
 	}
 }
 
+const getBoardsByUserId = async (userId) => {
+	try {
+		const response = await axios.get(
+			"http://localhost:5000/api/boards/user/" + userId
+		)
+		return response.data
+	} catch (error) {
+		console.log(error)
+		return []
+	}
+}
+
 const getBoardById = async (boardId) => {
 	try {
 		const response = await axios.get(
@@ -79,4 +91,5 @@ export {
 	deleteBoardById,
 	updateBoardNameById,
 	updatePositionListsBoardById,
+	getBoardsByUserId,
 }

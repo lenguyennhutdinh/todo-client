@@ -58,7 +58,7 @@ const SignUp = () => {
 				<section className="inner-section">
 					<div className="section-wrapper quick-switch">
 						<div className="layout-twothirds-center account-form">
-							<h1>Đăng ký tài khoản</h1>
+							<h1>Sign up</h1>
 							<div className="login-password-container">
 								<form
 									onSubmit={handleSubmit}
@@ -68,7 +68,7 @@ const SignUp = () => {
 									<Input
 										type="text"
 										name="email"
-										placeholder={"Nhập email"}
+										placeholder={"Enter your email..."}
 										onChange={handleChange}
 										value={form.email}
 										errorMessage={errorMessage.email}
@@ -77,7 +77,7 @@ const SignUp = () => {
 									<Input
 										type="password"
 										name="password"
-										placeholder={"Nhập mật khẩu"}
+										placeholder={"Enter your password..."}
 										onChange={handleChange}
 										value={form.password}
 										errorMessage={errorMessage.password}
@@ -86,7 +86,9 @@ const SignUp = () => {
 									<Input
 										type="password"
 										name="passwordConfirm"
-										placeholder={"Nhập lại mật khẩu"}
+										placeholder={
+											"Re-enter your password..."
+										}
 										onChange={handleChange}
 										value={form.passwordConfirm}
 										errorMessage={
@@ -98,13 +100,13 @@ const SignUp = () => {
 										id="login"
 										type="submit"
 										className="button account-button button-green btn btn-success"
-										value="Đăng ký"
+										value="Sign up"
 									/>
 								</form>
 								<div className="login-methods hide-when-two-factor">
 									<div className="login-oauth-container">
 										<div className="login-method-separator">
-											HOẶC
+											Or
 										</div>
 										<button
 											id="googleButton"
@@ -120,7 +122,7 @@ const SignUp = () => {
 												className="label"
 												data-analytics-button="loginWithGmailButton"
 											>
-												Tiếp tục với Google
+												Continue with Google
 											</span>
 										</button>
 										<button
@@ -136,7 +138,7 @@ const SignUp = () => {
 												className="label"
 												data-analytics-button="loginWithGmailButton"
 											>
-												Tiếp tục với Facebook
+												Continue with Facebook
 											</span>
 										</button>
 									</div>
@@ -150,7 +152,7 @@ const SignUp = () => {
 										to="/login"
 										onClick={handleSwitchLoginSignup}
 									>
-										Đã có tài khoản? Đăng nhập
+										Already have an account? Log in
 									</Link>
 								</li>
 							</ul>

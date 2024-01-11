@@ -20,9 +20,10 @@ import {
 	deleteBoardById,
 	getBoardById,
 } from "../../services/boards"
+import { v4 as uuid } from "uuid"
 
 const Header = () => {
-	const { data, setData, alert, setAlert } = useContext(AuthContext)
+	const { data, setData, userId, alert, setAlert } = useContext(AuthContext)
 	const {
 		setLists,
 		board,
@@ -30,19 +31,23 @@ const Header = () => {
 		stateOpen,
 		setStateOpen,
 		handleOpenBoards,
+		createBoardRef,
+		yourBoardsRef,
+		yourBoardsIconRef,
 	} = useContext(StateContext)
 	const [newBoardName, setNewBoardName] = useState("")
-	const createBoardRef = useRef(null)
 
 	useEffect(() => {
 		if (stateOpen.createBoard) createBoardRef.current.focus()
 	}, [stateOpen.createBoard])
 
 	const handleOpenCreateBoard = () => {
+		console.log("ok")
 		setStateOpen({
 			...stateOpen,
 			createBoard: !stateOpen.createBoard,
 		})
+		console.log(stateOpen)
 	}
 
 	const handleChangeBoardName = (e) => {
@@ -59,17 +64,20 @@ const Header = () => {
 			})
 		} else {
 			const newBoard = {
+				_id: uuid(),
 				boardName: newBoardName,
 				positionLists: [],
+				userId,
 			}
-			const newData = await createNewBoard(newBoard)
-			setData(newData)
-			setBoard(newData[newData.length - 1])
+			setLists()
+			setBoard(newBoard)
+			setData([...data, newBoard])
 			setStateOpen({
 				...stateOpen,
 				createBoard: !stateOpen.createBoard,
 			})
 			setNewBoardName("")
+			await createNewBoard(newBoard)
 		}
 	}
 
@@ -89,7 +97,6 @@ const Header = () => {
 			})
 		} else {
 			try {
-				await deleteBoardById(boardId)
 				const newData = data.filter((board) => board._id !== boardId)
 				setData(newData)
 				if (boardId === board._id) {
@@ -97,6 +104,7 @@ const Header = () => {
 						setBoard(newData[newData.length - 1])
 					}, 1000)
 				}
+				await deleteBoardById(boardId)
 			} catch (err) {
 				setAlert({
 					isAlert: !alert.isAlert,
@@ -110,13 +118,14 @@ const Header = () => {
 	return (
 		<div className="header">
 			<div className="left">
-				<span onClick={handleOpenBoards}>
+				<span ref={yourBoardsIconRef} onClick={handleOpenBoards}>
 					<FontAwesomeIcon icon={faBars} />
 				</span>
 
 				<div
 					className="boards"
 					style={{ display: stateOpen.yourBoards ? "block" : "none" }}
+					ref={yourBoardsRef}
 				>
 					<span onClick={handleOpenBoards}>
 						<FontAwesomeIcon icon={faXmark} />

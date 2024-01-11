@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useRef, useState } from "react"
 import { AuthContext } from "./AuthContext"
 
 export const StateContext = createContext({})
@@ -7,6 +7,9 @@ const StateProvider = ({ children }) => {
 	const { data, setData } = useContext(AuthContext)
 	const [board, setBoard] = useState()
 	const [lists, setLists] = useState()
+	const createBoardRef = useRef(null)
+	const yourBoardsRef = useRef(null)
+	const yourBoardsIconRef = useRef(null)
 	const [stateOpen, setStateOpen] = useState({
 		createBoard: false,
 		yourBoards: false,
@@ -18,6 +21,24 @@ const StateProvider = ({ children }) => {
 			...stateOpen,
 			yourBoards: !stateOpen.yourBoards,
 		})
+	}
+
+	const handleInOutElement = (e) => {
+		// if (
+		// 	!yourBoardsRef.current.contains(e.target) &&
+		// 	!yourBoardsIconRef.current.contains(e.target)
+		// ) {
+		// 	setStateOpen({
+		// 		...stateOpen,
+		// 		yourBoards: false,
+		// 	})
+		// }
+		// if (!createBoardRef.current.contains(e.target)) {
+		// 	setStateOpen({
+		// 		...stateOpen,
+		// 		createBoard: false,
+		// 	})
+		// }
 	}
 
 	const mapBoardAndData = (newLists) => {
@@ -46,6 +67,10 @@ const StateProvider = ({ children }) => {
 				lists,
 				setLists,
 				mapBoardAndData,
+				createBoardRef,
+				yourBoardsRef,
+				yourBoardsIconRef,
+				handleInOutElement,
 			}}
 		>
 			{children}

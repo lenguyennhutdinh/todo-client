@@ -8,8 +8,7 @@ import { v4 as uuid } from "uuid"
 import { AuthContext } from "../Context/AuthContext"
 const AddList = () => {
 	const { data, setData } = useContext(AuthContext)
-	const { lists, setLists, board, setBoard, mapBoardAndData } =
-		useContext(StateContext)
+	const { lists, setLists, board, setBoard } = useContext(StateContext)
 	const [isOpenAddList, setIsOpenAddList] = useState(false)
 	const [newListName, setNewListName] = useState("")
 	const addListRef = useRef(null)
@@ -36,9 +35,10 @@ const AddList = () => {
 			boardId: board._id,
 			isArchived: false,
 			positionCards: [],
+			cards: [],
 		}
 		console.log("add list", newList._id)
-
+		setLists([...lists, newList])
 		const newBoard = {
 			...board,
 			positionLists: [...board.positionLists, newList._id],
@@ -75,6 +75,9 @@ const AddList = () => {
 					onChange={handleChangeAddList}
 					value={newListName}
 					placeholder="Enter list title..."
+					onKeyDown={(e) => {
+						if (e.keyCode === 13) handleAddList()
+					}}
 				/>
 				<div className="row">
 					<button onClick={handleAddList} className="btn-add-list">

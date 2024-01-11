@@ -1215,3 +1215,7 @@ h1.title span {
 h1.title svg {
 	font-size: 3rem;
 }
+.atlassian-brand .inner-section .account-form .oauth-button span.label {
+	line-height: 26px;
+	padding-left: 8px;
+}

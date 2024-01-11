@@ -36,8 +36,13 @@ export const AuthProvider = ({ children }) => {
 				setUserId(localStorage.getItem("userId"))
 				setAlert({
 					isAlert: !alert.isAlert,
-					message: "Login success!",
+					message: "Login with google account successfully!",
 					severity: "success",
+				})
+				setForm({
+					email: "",
+					password: "",
+					passwordConfirm: "",
 				})
 				navigate("/")
 			})
@@ -51,8 +56,13 @@ export const AuthProvider = ({ children }) => {
 			localStorage.setItem("userId", result.user.uid)
 			setAlert({
 				isAlert: !alert.isAlert,
-				message: "Đăng nhập thành công!",
+				message: "Login with facebook account successfully!",
 				severity: "success",
+			})
+			setForm({
+				email: "",
+				password: "",
+				passwordConfirm: "",
 			})
 			navigate("/")
 		})
@@ -65,16 +75,21 @@ export const AuthProvider = ({ children }) => {
 					localStorage.setItem("userId", result.user.uid)
 					setAlert({
 						isAlert: !alert.isAlert,
-						message: "Đăng nhập thành công!",
+						message: "Sign up for an account successfully!",
 						severity: "success",
 					})
-					navigate("/")
+					setForm({
+						email: "",
+						password: "",
+						passwordConfirm: "",
+					})
+					navigate("/login")
 				})
 				.catch((error) => {
 					if (error.code === "auth/email-already-in-use")
 						setAlert({
 							isAlert: !alert.isAlert,
-							message: "Email đã được sử dụng!",
+							message: "Email already used!",
 							severity: "error",
 						})
 					else console.log(error.code)
@@ -88,24 +103,30 @@ export const AuthProvider = ({ children }) => {
 				localStorage.setItem("userId", result.user.uid)
 				setAlert({
 					isAlert: !alert.isAlert,
-					message: "Đăng nhập thành công!",
+					message: "Login successful!",
 					severity: "success",
 				})
-				navigate("/")
+				setForm({
+					email: "",
+					password: "",
+					passwordConfirm: "",
+				})
+				// navigate("/")
+				location.replace("http://localhost:5173")
 			})
 			.catch((error) => {
 				switch (error.code) {
 					case "auth/user-not-found":
 						setAlert({
 							isAlert: !alert.isAlert,
-							message: "Tài khoản không tồn tại",
+							message: "Account does not exist!",
 							severity: "error",
 						})
 						break
 					case "auth/wrong-password":
 						setAlert({
 							isAlert: !alert.isAlert,
-							message: "Mật khẩu không chính xác",
+							message: "Password is incorrect",
 							severity: "error",
 						})
 						break

@@ -13,16 +13,16 @@ import { StateContext } from "../Context/StateContext"
 import {
 	archivedCardById,
 	deleteCardById,
-	getCardsByListId,
 	renameCardById,
 } from "../../services/cards"
 
 const Card = (props) => {
-	const { card, setCards } = props
+	const { list, card } = props
 	const { lists, setLists } = useContext(StateContext)
 	const renameCardRef = useRef(null)
 	const [isOpenCardOption, setIsOpenCardOption] = useState(false)
 	const [newCardName, setNewCardName] = useState(card.cardName)
+	const listId = list._id
 	useEffect(() => {
 		if (isOpenCardOption) renameCardRef.current.select()
 	}, [isOpenCardOption])
@@ -38,23 +38,41 @@ const Card = (props) => {
 
 	const handleSaveRenameCard = async () => {
 		const cardId = card._id
-		await renameCardById(cardId, newCardName)
-		const cardsDB = await getCardsByListId(card.listId)
-		setCards(cardsDB)
+		const newLists = lists.map((list) => {
+			if (list._id === listId) {
+				return {
+					...list,
+					cards: list.cards.map((card) => {
+						if (card._id === cardId) {
+							return {
+								...card,
+								cardName: newCardName,
+							}
+						}
+						return card
+					}),
+				}
+			}
+			return list
+		})
+		setLists(newLists)
 		setIsOpenCardOption(!isOpenCardOption)
+		await renameCardById(cardId, newCardName)
 	}
 
 	const handleDeleteCard = async (listId, cardId) => {
 		const newLists = lists.map((list) => {
-			if (list.listId === listId)
+			if (list._id === listId)
 				return {
 					...list,
 					positionCards: list.positionCards.filter(
 						(card) => card._id !== cardId
 					),
+					cards: list.cards.filter((card) => card._id !== cardId),
 				}
 			return list
 		})
+		console.log(newLists)
 		setLists(newLists)
 		setIsOpenCardOption(!isOpenCardOption)
 		await deleteCardById(cardId)
@@ -62,16 +80,18 @@ const Card = (props) => {
 
 	const handleArchivedCard = async (listId, cardId) => {
 		const newLists = lists.map((list) => {
-			if (list.listId === listId)
+			if (list._id === listId)
 				return {
 					...list,
 					positionCards: list.positionCards.filter(
 						(card) => card._id !== cardId
 					),
+					cards: list.cards.filter((card) => card._id !== cardId),
 				}
 			return list
 		})
 		setLists(newLists)
+		setIsOpenCardOption(!isOpenCardOption)
 		await archivedCardById(cardId)
 	}
 
@@ -122,14 +142,14 @@ const Card = (props) => {
 					</div>
 					<div
 						className="card-action"
-						onClick={() => handleArchivedCard(listId, card._id)}
+						onClick={() => handleArchivedCard(list._id, card._id)}
 					>
 						<FontAwesomeIcon icon={faBoxArchive} />
 						<span>Archive</span>
 					</div>
 					<div
 						className="card-action"
-						onClick={() => handleDeleteCard(listId, card._id)}
+						onClick={() => handleDeleteCard(list._id, card._id)}
 					>
 						<FontAwesomeIcon icon={faTrash} />
 						<span>Delete</span>

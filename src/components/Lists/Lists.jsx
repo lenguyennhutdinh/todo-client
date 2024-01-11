@@ -5,59 +5,64 @@ import "./index.css"
 import { useContext, useEffect } from "react"
 import { applyDrag } from "../utils/dragDrop"
 import { StateContext } from "../Context/StateContext"
-import { getListsByBoardId } from "../../services/lists"
+import {
+	getListsByBoardId,
+	updatePositionCardsListById,
+} from "../../services/lists"
 import { updatePositionListsBoardById } from "../../services/boards"
+import { getCards } from "../../services/cards"
 
 const Lists = () => {
-	const { board, setBoard, lists, setLists } = useContext(StateContext)
-	const swapElements = (array, indices) => {
-		const temp = array[indices[0]]
-		array[indices[0]] = array[indices[1]]
-		array[indices[1]] = temp
-		return array
-	}
+	const { board, lists, setLists } = useContext(StateContext)
 
-	const getListsDB = async (boardId) => {
-		const listsDB = await getListsByBoardId(boardId)
-		// console.log(listsDB)
-		setLists(listsDB)
+	const getListsAndCards = async () => {
+		let newLists = await getListsByBoardId(board._id)
+		const cards = await getCards()
+		newLists = newLists.map((list) => {
+			return {
+				...list,
+				cards: list.positionCards.map((cardId) =>
+					cards.find((card) => card._id === cardId)
+				),
+			}
+		})
+		// console.log(newLists)
+		setLists(newLists)
 	}
 
 	useEffect(() => {
-		getListsDB(board._id)
-		// console.log("getListsDB", board)
-	}, [board])
+		getListsAndCards()
+		// console.log("---- getListsDB")
+	}, [board._id])
 
 	const onColumnDrop = async (dropResult) => {
-		const { removedIndex, addedIndex } = dropResult
+		const { addedIndex } = dropResult
 		if (addedIndex < board.positionLists.length) {
-			const newBoard = {
-				...board,
-				positionLists: swapElements(board.positionLists, [
-					addedIndex,
-					removedIndex,
-				]),
-			}
-			setBoard(newBoard)
+			let newLists = [...lists]
+			newLists = applyDrag(newLists, dropResult)
+			setLists(newLists)
+			console.log(newLists)
 			await updatePositionListsBoardById(
-				newBoard._id,
-				newBoard.positionLists
+				board._id,
+				newLists.map((list) => list._id)
 			)
 		}
 	}
 
-	const onCardDrop = (dropResult, listId) => {
-		let newLists = [...lists]
-
-		let currentList = newLists.find((list) => list._id === listId)
-		currentList.positionCards = applyDrag(
-			currentList.positionCards,
-			dropResult
-		)
-		console.log(currentList)
-		setLists(newLists)
-
-		// mapBoardAndData(newLists)
+	const onCardDrop = async (dropResult, listId) => {
+		const { removedIndex, addedIndex } = dropResult
+		if (addedIndex !== null || removedIndex !== null) {
+			let newLists = [...lists]
+			let currentList = newLists.find((list) => list._id === listId)
+			currentList.cards = applyDrag(currentList.cards, dropResult)
+			currentList.positionCards = currentList.cards.map(
+				(card) => card._id
+			)
+			console.log(currentList)
+			setLists(newLists)
+			await updatePositionCardsListById(newLists)
+			console.log(newLists)
+		}
 	}
 
 	return (
@@ -73,19 +78,18 @@ const Lists = () => {
 					className: "list-drop-preview",
 				}}
 			>
-				{lists &&
-					lists.map(
-						(list) =>
-							list.isArchived || (
-								<Draggable key={list._id}>
-									<List
-										key={list._id}
-										list={list}
-										onCardDrop={onCardDrop}
-									/>
-								</Draggable>
-							)
-					)}
+				{lists?.map(
+					(list) =>
+						list.isArchived || (
+							<Draggable key={list._id}>
+								<List
+									key={list._id}
+									list={list}
+									onCardDrop={onCardDrop}
+								/>
+							</Draggable>
+						)
+				)}
 				<AddList />
 			</Container>
 		</div>
